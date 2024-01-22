@@ -8,7 +8,9 @@ def pin_to_ipfs(data):
 
 	headers = {
         "pinata_api_key": "4d1ca1406d39d453fb23",
-        "pinata_secret_api_key": "102a7edffa23ac45f84fd12813211f9de296f9500341e7dfcfc0590d0d3486f5"
+        "pinata_secret_api_key": "102a7edffa23ac45f84fd12813211f9de296f9500341e7dfcfc0590d0d3486f5",
+		"accept": "application/json",
+		"content-type": "application/json"
     }
 
 	response = requests.post(url, headers=headers)
