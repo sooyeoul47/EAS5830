@@ -10,7 +10,7 @@ def pin_to_ipfs(data):
 	# Pin the JSON data to IPFS using Pinata
 	response = requests.post('https://api.pinata.cloud/pinning/pinJSONToIPFS', json=json_data, headers={'Content-Type': 'application/json'})
 
-	cid = response.json()['IpfsHash']
+	cid = response.json()
 
 	return cid
 
