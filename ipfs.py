@@ -7,9 +7,9 @@ def pin_to_ipfs(data):
 	url = "https://api.pinata.cloud/pinning/pinJSONToIPFS"
 
 	headers = {
-			"accept": "application/json",
-			"content-type": "application/json"
-	}
+        "pinata_api_key": "588669fdc80fc9ba4b68",
+        "pinata_secret_api_key": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySW5mb3JtYXRpb24iOnsiaWQiOiJmYmNkZDQwMi05ZjI3LTRjOTYtYjE4NC0zOGNkNDVmOTkzMDMiLCJlbWFpbCI6InNvb3lvdWxAc2Vhcy51cGVubi5lZHUiLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwicGluX3BvbGljeSI6eyJyZWdpb25zIjpbeyJpZCI6IkZSQTEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX0seyJpZCI6Ik5ZQzEiLCJkZXNpcmVkUmVwbGljYXRpb25Db3VudCI6MX1dLCJ2ZXJzaW9uIjoxfSwibWZhX2VuYWJsZWQiOmZhbHNlLCJzdGF0dXMiOiJBQ1RJVkUifSwiYXV0aGVudGljYXRpb25UeXBlIjoic2NvcGVkS2V5Iiwic2NvcGVkS2V5S2V5IjoiNTg4NjY5ZmRjODBmYzliYTRiNjgiLCJzY29wZWRLZXlTZWNyZXQiOiI1ZTgzMmU4MGI3MmFlODc4YzQ0NTY1Zjc2ZmVmMWQxNjQzM2M0MWQwMTlhZDFkZDRkZGQ5Y2EyNjY5ZjQ5ZDJjIiwiaWF0IjoxNzA1OTA1MjQ3fQ.TDGX-LrFWCzB5iTpd0txPaR-Bx3jfl2e8w1i3v9dESw"
+    }
 
 	response = requests.post(url, headers=headers)
 	print(response.text)
