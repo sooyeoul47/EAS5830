@@ -12,8 +12,10 @@ def pin_to_ipfs(data):
 		"accept": "application/json",
 		"content-type": "application/json"
     }
+	json_data = json.dumps(data)
 
-	response = requests.post(url, headers=headers)
+	response = requests.post(url, headers=headers, data=json_data)
+	
 	print(response.text)
 	# Extract the CID
 	cid = response.json()["IpfsHash"]
