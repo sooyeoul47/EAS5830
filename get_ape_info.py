@@ -34,7 +34,7 @@ def get_ape_info(apeID):
 	# Get the Token URI
 	owner = contract.functions.ownerOf(apeID).call()
 	token_uri = contract.functions.tokenURI(apeID).call()
-	
+
 	# Fetch metadata from IPFS
 	ipfs_gateway = "https://ipfs.io/ipfs/"
 	metadata_url = token_uri.replace("ipfs://", ipfs_gateway)
@@ -49,6 +49,7 @@ def get_ape_info(apeID):
 	else:
 		raise Exception(f"Failed to fetch metadata: HTTP {response.status_code} - {response.text}")
 
+	print(metadata)
 	# Extract image and eyes from metadata
 	image = metadata['image'].replace("ipfs://", ipfs_gateway)
 	eyes = next(attr['value'] for attr in metadata['attributes'] if attr['trait_type'] == 'Eyes')
