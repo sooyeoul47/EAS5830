@@ -8,7 +8,7 @@ import time
 
 
 #Connect to an Ethereum node
-api_url = "https://gateway.pinata.cloud/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/1"
+api_url = "https://gateway.pinata.cloud/ipfs/"
 provider = HTTPProvider(api_url)
 web3 = Web3(provider)
 
@@ -34,19 +34,15 @@ def get_ape_info(apeID):
 	# Fetch the owner of the ape
 	owner = contract.functions.ownerOf(apeID).call()
 
-    # Fetch the token URI (metadata URI)
-	token_uri = contract.functions.tokenURI(apeID).call()
+	tokenURI = contract.functions.tokenURI(apeID).call()
+	metadata_url = tokenURI.replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
 
-    # Convert IPFS URI to HTTP URI
-	ipfs_hash = token_uri.split('//')[1]
-	metadata_url = f"https://gateway.pinata.cloud/ipfs/{ipfs_hash}"
-
-	response = requests.get(metadata_url)
-	metadata = response.json()
+	metadata_response = requests.get(metadata_url)
+	metadata = metadata_response.json()
 	
-	image = metadata.get('image', '')
+	image = metadata.get('image', '').replace('ipfs://', 'https://gateway.pinata.cloud/ipfs/')
 	attributes = metadata.get('attributes', [])
-	eyes = next((attr['value'] for attr in attributes if attr['trait_type'] == 'eyes'), '')
+	eyes = next((item['value'] for item in attributes if item['trait_type'] == 'eyes'), None)
 
 	data = {'owner': owner, 'image': image, 'eyes': eyes}
 	
