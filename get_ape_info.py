@@ -5,9 +5,16 @@ import requests
 import json
 import time
 
+
+
+#Connect to an Ethereum node
 api_url = "https://gateway.pinata.cloud/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/1"
 provider = HTTPProvider(api_url)
 web3 = Web3(provider)
+
+
+bayc_address = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"
+contract_address = Web3.toChecksumAddress(bayc_address)
 
 #You will need the ABI to connect to the contract
 #The file 'abi.json' has the ABI for the bored ape contract
@@ -15,13 +22,10 @@ web3 = Web3(provider)
 #https://api.etherscan.io/api?module=contract&action=getabi&address=0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D
 with open('/home/codio/workspace/abi.json', 'r') as f:
 	abi = json.load(f) 
-
-############################
-#Connect to an Ethereum node
-
-bayc_address = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"
-contract_address = Web3.toChecksumAddress(bayc_address)
 contract = web3.eth.contract(address=contract_address, abi=abi)
+############################
+
+
 
 def get_ape_info(apeID):
 	assert isinstance(apeID,int), f"{apeID} is not an int"
