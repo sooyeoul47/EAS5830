@@ -32,6 +32,7 @@ def get_ape_info(apeID):
 	
 	#YOUR CODE HERE	
 	# Get the Token URI
+	owner = contract.functions.ownerOf(apeID).call()
 	token_uri = contract.functions.tokenURI(apeID).call()
 
 	# Fetch metadata from IPFS
