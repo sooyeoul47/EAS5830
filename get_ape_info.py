@@ -41,7 +41,13 @@ def get_ape_info(apeID):
 
 	response = requests.get(metadata_url)
 
-	metadata = response.json()
+	if response.status_code == 200:
+		try:
+			metadata = response.json()
+		except json.JSONDecodeError:
+			raise Exception(f"Failed to decode JSON from response: {response.text}")
+	else:
+		raise Exception(f"Failed to fetch metadata: HTTP {response.status_code} - {response.text}")
 
 	# Extract image and eyes from metadata
 	image = metadata['image'].replace("ipfs://", ipfs_gateway)
