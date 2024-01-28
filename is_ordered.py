@@ -25,11 +25,12 @@ else:
 	Conveniently, most type 2 transactions set the gasPrice field to be min( tx.maxPriorityFeePerGas + block.baseFeePerGas, tx.maxFeePerGas )
 """
 def is_ordered_block(block_num):
-    block = w3.eth.get_block(block_num)
-    ordered = False
+	block = w3.eth.get_block(block_num)
+    # ordered = False
     
     #YOUR CODE HERE
 	is_post_eip_1559 = block_num >= 12965000  # London hard fork block number
+
 	base_fee_per_gas = block.baseFeePerGas if is_post_eip_1559 else 0
 	
 	last_priority_fee = float('inf')
@@ -38,17 +39,17 @@ def is_ordered_block(block_num):
 		# Calculate priority fee
 		if is_post_eip_1559 and tx.type == 2:
             # Type 2 transaction
-            priority_fee = min(tx.maxPriorityFeePerGas, tx.maxFeePerGas - base_fee_per_gas)
-        else:
+			priority_fee = min(tx.maxPriorityFeePerGas, tx.maxFeePerGas - base_fee_per_gas)
+		else:
             # Type 0 transaction
-            priority_fee = tx.gasPrice
+			priority_fee = tx.gasPrice
 
     # Check if transactions are in decreasing order
 		if priority_fee > last_priority_fee:
 			return False
 		last_priority_fee = priority_fee
-
-    return True
+		
+	return True
 
 """
 	This might be useful for testing
