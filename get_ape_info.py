@@ -8,9 +8,13 @@ import time
 
 bayc_address = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"
 contract_address = Web3.to_checksum_address(bayc_address)
-api_url = "https://chocolate-legislative-macaw-98.mypinata.cloud.mypinata.cloud/ipfs/"
+api_url = "https://api.pinata.cloud/pinning/pinJSONToIPFS"
 provider = HTTPProvider(api_url)
 web3 = Web3(provider)
+headers = {
+        "pinata_api_key": "4d1ca1406d39d453fb23",
+        "pinata_secret_api_key": "102a7edffa23ac45f84fd12813211f9de296f9500341e7dfcfc0590d0d3486f5"
+}
 #You will need the ABI to connect to the contract
 #The file 'abi.json' has the ABI for the bored ape contract
 #In general, you can get contract ABIs from etherscan
@@ -41,7 +45,7 @@ def get_ape_info(apeID):
 	# Replace the IPFS URL prefix with a public gateway URL
 	metadata_url = token_uri.replace('ipfs://', 'https://ipfs.io/ipfs/')
 	try:
-		response = requests.get(metadata_url)
+		response = requests.get(metadata_url, headers=headers)
 		metadata = response.json()
 
 		data['image'] = metadata.get('image', "")
