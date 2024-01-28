@@ -8,7 +8,7 @@ import time
 
 bayc_address = "0xBC4CA0EdA7647A8aB7C2061c2E118A18a936f13D"
 contract_address = Web3.to_checksum_address(bayc_address)
-api_url = "https://api.pinata.cloud/pinning/pinJSONToIPFS"
+api_url = "https://gateway.pinata.cloud/ipfs/"
 provider = HTTPProvider(api_url)
 web3 = Web3(provider)
 headers = {
