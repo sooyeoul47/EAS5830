@@ -34,9 +34,9 @@ def get_ape_info(apeID):
 	# Get the Token URI
 	owner = contract.functions.ownerOf(apeID).call()
 	token_uri = contract.functions.tokenURI(apeID).call()
-	print(token_uri)
+	
 	# Fetch metadata from IPFS
-	ipfs_gateway = "https://gateway.pinata.cloud/ipfs/"
+	ipfs_gateway = "https://ipfs.io/ipfs/"
 	metadata_url = token_uri.replace("ipfs://", ipfs_gateway)
 
 	response = requests.get(metadata_url)
