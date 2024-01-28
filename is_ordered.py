@@ -25,7 +25,7 @@ else:
 	Conveniently, most type 2 transactions set the gasPrice field to be min( tx.maxPriorityFeePerGas + block.baseFeePerGas, tx.maxFeePerGas )
 """
 def is_ordered_block(block_num):
-	block = w3.eth.get_block(block_num)
+	block = w3.eth.get_block(block_num, full_transactions=True)
     # ordered = False
     
     #YOUR CODE HERE
