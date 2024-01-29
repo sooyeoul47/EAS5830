@@ -49,14 +49,18 @@ def get_ape_info(apeID):
 	else:
 		raise Exception(f"Failed to fetch metadata: HTTP {response.status_code} - {response.text}")
 
-	print(metadata)
+	# print(metadata)
 	# Extract image and eyes from metadata
-	image = metadata['image'].replace("ipfs://", ipfs_gateway)
-	eyes = next(attr['value'] for attr in metadata['attributes'] if attr['trait_type'] == 'Eyes')
+	# image = metadata['image'].replace("ipfs://", ipfs_gateway)
+	image_ipfs_url = metadata.get('image', '')
+	image_url = image_ipfs_url.replace("ipfs://", ipfs_gateway)
 
-	data = {'owner': owner, 'image': image, 'eyes': eyes}
+    # Extract the eyes attribute
+	eyes_value = next((item['value'] for item in metadata.get('attributes', []) if item['trait_type'] == 'Eyes'), 'Unknown')
+	# eyes = next(attr['value'] for attr in metadata['attributes'] if attr['trait_type'] == 'Eyes')
 
+	data = {'owner': owner, 'image': image_url, 'eyes': eyes_value}
+	print(data)
 	assert isinstance(data,dict), f'get_ape_info{apeID} should return a dict' 
 	assert all( [a in data.keys() for a in ['owner','image','eyes']] ), f"return value should include the keys 'owner','image' and 'eyes'"
 	return data
-
