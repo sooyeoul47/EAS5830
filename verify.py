@@ -49,9 +49,12 @@ contract = web3.eth.contract(address=contract_address, abi=abi)
 
 
 def mint_nft(nonce):
-    claim_function = contract.functions.claim(nonce)
+    nonce_bytes = nonce.to_bytes(32, byteorder='big', signed=False)
+    
+    claim_function = contract.functions.claim(wallet_address, Web3.keccak(nonce_bytes))
     transaction = claim_function.buildTransaction({
-        'chainId': 43113,  # Chain ID for Fuji Testnet
+        'from': wallet_address,  
+        'chainId': 43113,  
         'gas': 700000,
         'gasPrice': web3.toWei('50', 'gwei'),
         'nonce': web3.eth.getTransactionCount(wallet_address),
@@ -69,7 +72,7 @@ if __name__ == '__main__':
     """
         Test your function
     """
-    nonce = 7748
+    nonce = 77
     mint_nft(nonce)
     
 
