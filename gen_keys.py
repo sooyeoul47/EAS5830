@@ -13,37 +13,30 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     If fewer than (keyId+1) mnemonics have been generated, generate a new one and return that
     """
 
-    w3 = Web3()
+    # w3 = Web3()
 
     if os.path.exists(filename):
         with open(filename, 'r') as file:
             private_keys = file.readlines()
-        # Ensure we have a private key for the given keyId
         if keyId < len(private_keys):
-            # Use an existing private key
             private_key = private_keys[keyId].strip()
         else:
-            # Generate a new private key and save it
             new_account = eth_account.Account.create()
-            private_key = new_account.privateKey.hex()
+            private_key = new_account.key.hex()  # Corrected here
             with open(filename, 'a') as file:
                 file.write(private_key + '\n')
     else:
-        # File does not exist, generate a new private key
         new_account = eth_account.Account.create()
-        private_key = new_account.privateKey.hex()
+        private_key = new_account.key.hex()  # Corrected here
         with open(filename, 'w') as file:
             file.write(private_key + '\n')
 
     
-    # Create an account from the mnemonic
     account = eth_account.Account.from_key(private_key)
 
-    # Sign the challenge
     msg = eth_account.messages.encode_defunct(text=challenge)
     sig = account.sign_message(msg)
 
-    # Verify the signature (optional here, as the assertion is already part of the provided code)
     eth_addr = account.address
 	#YOUR CODE HERE
     
