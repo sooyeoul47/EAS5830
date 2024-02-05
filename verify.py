@@ -43,8 +43,6 @@ private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd
 
 web3 = Web3(Web3.HTTPProvider(rpc_url))
 
-print(f"Connected to Avalanche Fuji Testnet: {web3.isConnected()}")
-
 with open('/home/codio/workspace/NFT.abi', 'r') as f:
 	abi = json.load(f) 
      
