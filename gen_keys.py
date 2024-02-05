@@ -17,24 +17,27 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
 
     if os.path.exists(filename):
         with open(filename, 'r') as file:
-            mnemonics = file.readlines()
-        if keyId < len(mnemonics):
-            # Use existing mnemonic
-            mnemonic = mnemonics[keyId].strip()
+            private_keys = file.readlines()
+        # Ensure we have a private key for the given keyId
+        if keyId < len(private_keys):
+            # Use an existing private key
+            private_key = private_keys[keyId].strip()
         else:
-            # Generate a new mnemonic and append it
-            mnemonic = eth_account.Account.create().address
+            # Generate a new private key and save it
+            new_account = eth_account.Account.create()
+            private_key = new_account.privateKey.hex()
             with open(filename, 'a') as file:
-                file.write(mnemonic + '\n')
+                file.write(private_key + '\n')
     else:
-        # File does not exist, generate a new mnemonic
-        mnemonic = eth_account.Account.create().address
+        # File does not exist, generate a new private key
+        new_account = eth_account.Account.create()
+        private_key = new_account.privateKey.hex()
         with open(filename, 'w') as file:
-            file.write(mnemonic + '\n')
+            file.write(private_key + '\n')
 
     
     # Create an account from the mnemonic
-    account = eth_account.Account.from_key(mnemonic)
+    account = eth_account.Account.from_key(private_key)
 
     # Sign the challenge
     msg = eth_account.messages.encode_defunct(text=challenge)
