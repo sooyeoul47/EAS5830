@@ -47,6 +47,26 @@ with open('/home/codio/workspace/NFT.abi', 'r') as f:
      
 nft_contract = w3.eth.contract(address=contract_address, abi=abi)
 
+nonce = w3.eth.getTransactionCount(my_address)
+random_nonce = w3.toHex(w3.keccak(text="your random string here"))
+
+# Preparing the transaction
+claim_txn = nft_contract.functions.claim(random_nonce).buildTransaction({
+    'chainId': 43113,  # Chain ID for Avalanche Fuji Testnet
+    'gas': 500000,
+    'gasPrice': w3.toWei('50', 'gwei'),
+    'nonce': nonce,
+})
+
+# Signing the transaction
+signed_txn = w3.eth.account.signTransaction(claim_txn, private_key=my_private_key)
+
+# Sending the transaction
+tx_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+
+tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+print(tx_receipt)
+
 # def claim_nft():
 #     nonce = w3.eth.getTransactionCount(my_address)
 #     tx = nft_contract.functions.claim(os.urandom(16)).buildTransaction({
@@ -73,25 +93,7 @@ if __name__ == '__main__':
         Test your function
     """
 
-    nonce = w3.eth.getTransactionCount(my_address)
-    random_nonce = w3.toHex(w3.keccak(text="your random string here"))
-
-    # Preparing the transaction
-    claim_txn = nft_contract.functions.claim(random_nonce).buildTransaction({
-        'chainId': 43113,  # Chain ID for Avalanche Fuji Testnet
-        'gas': 500000,
-        'gasPrice': w3.toWei('50', 'gwei'),
-        'nonce': nonce,
-    })
-
-    # Signing the transaction
-    signed_txn = w3.eth.account.signTransaction(claim_txn, private_key=my_private_key)
-
-    # Sending the transaction
-    tx_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
-
-    tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-    print(tx_receipt)
+    
 
 
     if verifySig():
