@@ -34,8 +34,15 @@ def verifySig():
     return w3.eth.account.recover_message( challenge , signature=sig ) == address
 
 
+rpc_url = "https://api.avax-test.network/ext/bc/C/rpc"  # Example RPC URL for Avalanche Fuji Testnet
+web3 = Web3(Web3.HTTPProvider(rpc_url))
+
+if web3.isConnected():
+    print("Connected to Avalanche Fuji Testnet")
+else:
+    print("Failed to connect to the Avalanche Fuji Testnet")
+    
 contract_address = "0x85ac2e065d4526FBeE6a2253389669a12318A412"
-web3 = Web3(Web3.HTTPProvider("https://testnet.snowtrace.io/address/0x85ac2e065d4526FBeE6a2253389669a12318A412"))
 
 my_address = "0xDEdA37C517eF097c10D6501A33de377F194660a5"
 my_private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"
@@ -55,8 +62,8 @@ def claim_nft():
     })
     signed_tx = web3.eth.account.sign_transaction(tx, my_private_key)
     tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
-    print(f"Transaction hash: {tx_hash.hex()}")
-    return tx_hash
+    receipt = web3.eth.waitForTransactionReceipt(tx_hash)
+    return receipt
 
 if __name__ == '__main__':
     """
