@@ -15,20 +15,34 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     If fewer than (keyId+1) mnemonics have been generated, generate a new one and return that
     """
 
-    w3 = Web3()
+     # Ensure the Web3 instance is using the local provider
+    w3 = Web3(Web3.EthereumTesterProvider())
 
-    # Generate a new account
-    new_account = Account.create()
+    # Attempt to load mnemonics from file
+    try:
+        with open(filename, 'r') as file:
+            mnemonics = file.readlines()
+    except FileNotFoundError:
+        mnemonics = []
 
-    # Access the private key and address from the new account
-    private_key = new_account.privateKey.hex()  # Correctly access the private key
-    eth_addr = new_account.address
+    # Check if a mnemonic for the current keyId exists, if not generate a new one
+    if keyId >= len(mnemonics):
+        # Generate new mnemonic and append to the list
+        new_mnemonic = eth_account.Account.create().address
+        mnemonics.append(new_mnemonic + '\n')
+        with open(filename, 'w') as file:
+            file.writelines(mnemonics)
 
-    # Prepare the message
+    # Use the mnemonic to generate an account
+    mnemonic = mnemonics[keyId].strip()
+    acct = eth_account.Account.from_key(mnemonic)
+
+    # Sign the challenge
     msg = encode_defunct(challenge)
+    sig = acct.sign_message(msg)
 
-    # Sign the message with the private key
-    sig = w3.eth.account.sign_message(msg, private_key=private_key)
+    # Verify the signature (This is more of a sanity check as the assertion below does this)
+    eth_addr = acct.address
 
 	#YOUR CODE HERE
     
