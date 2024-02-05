@@ -34,8 +34,8 @@ def verifySig():
     return w3.eth.account.recover_message( challenge , signature=sig ) == address
 
 
-rpc_url = "https://api.avax-test.network/ext/bc/C/rpc"  # Example RPC URL for Avalanche Fuji Testnet
-web3 = Web3(Web3.HTTPProvider(rpc_url))
+rpc_url = "https://eth-mainnet.g.alchemy.com/v2/3stBMV-y3BpNCMQpK0BQV6kLWEmlfKdF" #Set this to a node that you can connect to (e.g. an Alchemy node)
+w3 = Web3(Web3.HTTPProvider(rpc_url))
     
 contract_address = "0x85ac2e065d4526FBeE6a2253389669a12318A412"
 
@@ -45,19 +45,19 @@ my_private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d
 with open('/home/codio/workspace/NFT.abi', 'r') as f:
 	abi = json.load(f) 
      
-nft_contract = web3.eth.contract(address=contract_address, abi=abi)
+nft_contract = w3.eth.contract(address=contract_address, abi=abi)
 
 def claim_nft():
-    nonce = web3.eth.getTransactionCount(my_address)
+    nonce = w3.eth.getTransactionCount(my_address)
     tx = nft_contract.functions.claim(os.urandom(16)).buildTransaction({
         'from': my_address,
         'gas': 1000000,
-        'gasPrice': web3.toWei('50', 'gwei'),
+        'gasPrice': w3.toWei('50', 'gwei'),
         'nonce': nonce,
     })
-    signed_tx = web3.eth.account.sign_transaction(tx, my_private_key)
-    tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
-    receipt = web3.eth.waitForTransactionReceipt(tx_hash)
+    signed_tx = w3.eth.account.sign_transaction(tx, my_private_key)
+    tx_hash = w3.eth.sendRawTransaction(signed_tx.rawTransaction)
+    receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     return receipt
 
 if __name__ == '__main__':
