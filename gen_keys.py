@@ -1,8 +1,6 @@
-from web3 import Web3, Account
+from web3 import Web3
 import eth_account
 import os
-from eth_account import Account
-from eth_account.messages import encode_defunct
 
 def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     """
@@ -15,40 +13,20 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     If fewer than (keyId+1) mnemonics have been generated, generate a new one and return that
     """
 
-     # Ensure the Web3 instance is using the local provider
+	#YOUR CODE HERE
+    # Initialize Web3 (Dummy provider since we're not interacting with a chain here)
     w3 = Web3()
 
-    # Ensure the directory for the filename exists
-    private_keys = ["0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"]
+    # Generate a new Ethereum account
+    account = eth_account.Account.create()
+    eth_addr = account.address
 
-    # Try to read existing private keys from the file
-    if os.path.exists(filename):
-        with open(filename, 'r') as file:
-            private_keys = file.read().splitlines()
+    # Prepare the message for signing
+    msg = eth_account.messages.encode_defunct(challenge)
 
-    # Check if we need to generate a new private key
-    if keyId >= len(private_keys):
-        # Generate a new account
-        new_account = w3.eth.account.create()
-        # Extract the private key in its hexadecimal representation
-        private_key = new_account.key.hex() if hasattr(new_account, 'key') else new_account.privateKey.hex()
-        # Append the new private key to the list
-        private_keys.append(private_key)
-        # Save the new private key list to the file
-        with open(filename, 'w') as file:
-            file.write("\n".join(private_keys))
-    else:
-        # Use the existing private key
-        private_key = private_keys[keyId]
+    # Sign the message
+    sig = account.sign_message(msg)
 
-    # Derive the account address from the private key
-    eth_addr = w3.eth.account.privateKeyToAccount(private_key).address
-
-    # Sign the challenge
-    sig = w3.eth.account.sign_message(w3.keccak(text=str(challenge)), private_key=private_key)
-
-	#YOUR CODE HERE
-    
     assert eth_account.Account.recover_message(msg,signature=sig.signature.hex()) == eth_addr, f"Failed to sign message properly"
 
     #return sig, acct #acct contains the private key
