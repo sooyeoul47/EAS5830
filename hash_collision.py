@@ -9,27 +9,22 @@ def hash_collision(k):
         print( "Specify a positive number of bits" )
         return( b'\x00',b'\x00' )
    
-    #Collision finding code goes here
-    x = os.urandom(16)
-    y = os.urandom(16)
-
-    hex_digits = k // 4
-    
     while True:
-        x_hash = hashlib.sha256(x).hexdigest()
-        y_hash = hashlib.sha256(y).hexdigest()
+        # Generate two random strings
+        x = os.urandom(16)  # You can adjust the length as needed
+        y = os.urandom(16)
 
-        # Check if the last k bits (or hex_digits/4 of the hash) match
-        if x_hash[-hex_digits:] == y_hash[-hex_digits:]:
-            break
-        else:
-            # Generate new random values for x and y
-            x = os.urandom(16)
-            y = os.urandom(16)
-            while y == x:  # Ensure y is different from x
-                y = os.urandom(16)
+        # Compute SHA256 hashes
+        hash_x = hashlib.sha256(x).hexdigest()
+        hash_y = hashlib.sha256(y).hexdigest()
 
-    return( x, y )
+        # Convert hexdigests to binary strings
+        bin_x = bin(int(hash_x, 16))[-k:]  # Get the last k bits
+        bin_y = bin(int(hash_y, 16))[-k:]  # Get the last k bits
+
+        # Check if the last k bits match
+        if bin_x == bin_y:
+            return (x, y)
 
 
 
