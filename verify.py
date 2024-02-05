@@ -1,4 +1,4 @@
-from web3 import Web3
+from web3 import Web3, HTTPProvider
 from eth_account.messages import encode_defunct
 from web3 import Account
 import random
@@ -36,38 +36,51 @@ def verifySig():
 
 
 
-rpc_url = "https://api.avax-test.network/ext/bc/C/rpc" 
-contract_address = Web3.to_checksum_address("0x85ac2e065d4526FBeE6a2253389669a12318A412")
-wallet_address = "0xDEdA37C517eF097c10D6501A33de377F194660a5"
-private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"
+# Replace these with your actual details
+rpc_url = "https://api.avax-test.network/ext/bc/C/rpc"  # Example Avalanche Fuji Testnet RPC URL
+private_key = "YOUR_PRIVATE_KEY_HERE"  # WARNING: Keep your private key secure
+contract_address = Web3.toChecksumAddress("0x85ac2e065d4526FBeE6a2253389669a12318A412")
+account_address = "YOUR_ACCOUNT_ADDRESS_HERE"  # Your Ethereum address
 
-web3 = Web3(Web3.HTTPProvider(rpc_url))
+# Load ABI
+with open('/mnt/data/NFT.abi', 'r') as abi_definition:
+    contract_abi = json.load(abi_definition)
 
-with open('/home/codio/workspace/NFT.abi', 'r') as f:
-	abi = json.load(f) 
-     
-nft_contract = web3.eth.contract(address=contract_address, abi=abi)
+# Setup web3 connection
+web3 = Web3(HTTPProvider(rpc_url))
+if web3.isConnected():
+    print("Connected to the Avalanche Fuji Testnet")
+else:
+    print("Failed to connect to the Avalanche Fuji Testnet")
+    exit()
 
+# Load contract
+contract = web3.eth.contract(address=contract_address, abi=contract_abi)
 
-def claim_nft(account, nonce):
-    transaction = nft_contract.functions.claim(account.address, nonce).buildTransaction({
-        'chainId': 43113,
-        'gas': 1000000,
-        'gasPrice': web3.toWei('50', 'gwei'),
-        'nonce': web3.eth.getTransactionCount(account.address),
-    })
-    signed_txn = account.signTransaction(transaction)
-    return web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+# Generate nonce - this is a simplistic example, consider more complex strategies for real use
+nonce = web3.toHex(text='unique_nonce')  # Replace 'unique_nonce' with your strategy
 
+# Prepare the claim transaction
+account = Account.from_key(private_key)
+nonce_for_tx = web3.eth.getTransactionCount(account.address)
+transaction = contract.functions.claim(account_address, nonce).buildTransaction({
+    'chainId': 43113,  # Avalanche Fuji Testnet Chain ID
+    'gas': 3000000,
+    'gasPrice': web3.toWei('50', 'gwei'),
+    'nonce': nonce_for_tx,
+})
+
+# Sign the transaction
+signed_txn = account.sign_transaction(transaction)
+
+# Send the transaction
+tx_hash = web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+print(f"Transaction sent, TX Hash: {tx_hash.hex()}")
 
 if __name__ == '__main__':
     """
         Test your function
     """
-    account = Account.from_key(private_key)
-    nonce = web3.toHex(text='5')
-    claim_nft(account, nonce)
-    
 
     if verifySig():
         print( f"You passed the challenge!" )
