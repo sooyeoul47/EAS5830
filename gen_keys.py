@@ -16,7 +16,7 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     """
 
      # Ensure the Web3 instance is using the local provider
-    w3 = Web3(Web3.EthereumTesterProvider())
+    w3 = Web3()
 
     # Attempt to load mnemonics from file
     try:
