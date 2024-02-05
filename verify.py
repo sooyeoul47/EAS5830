@@ -62,7 +62,7 @@ def mint_nft():
     txn = contract.functions.claim(from_address, Web3.to_bytes(text="nonce2")).build_transaction({
         'from': from_address,
         'chainId': 43113,  # Chain ID for Avalanche Fuji Testnet
-        'gas': 700000,
+        'gas': 20000,
         'maxFeePerGas': w3.to_wei('50', 'gwei'),
         'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
         'nonce': nonce,
@@ -80,7 +80,7 @@ if __name__ == '__main__':
         Test your function
     """
     
-    print(mint_nft())
+    mint_nft()
 
 
     if verifySig():
