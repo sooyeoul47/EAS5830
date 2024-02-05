@@ -45,35 +45,26 @@ web3 = Web3(Web3.HTTPProvider(rpc_url))
 with open('/home/codio/workspace/NFT.abi', 'r') as f:
 	abi = json.load(f) 
      
-contract = web3.eth.contract(address=contract_address, abi=abi)
+nft_contract = web3.eth.contract(address=contract_address, abi=abi)
 
 
-def mint_nft(nonce):
-    nonce_bytes = nonce.to_bytes(32, byteorder='big', signed=False)
-    
-    claim_function = contract.functions.claim(wallet_address, Web3.keccak(nonce_bytes))
-    transaction = claim_function.buildTransaction({
-        'from': wallet_address,  
-        'chainId': 43113,  
-        'gas': 700000,
+def claim_nft(nonce):
+    transaction = nft_contract.functions.claim(wallet_address, nonce).buildTransaction({
+        'chainId': <Chain_ID_for_Fuji_Testnet>,
+        'gas': 1000000,
         'gasPrice': web3.toWei('50', 'gwei'),
         'nonce': web3.eth.getTransactionCount(wallet_address),
     })
-
-    signed_txn = web3.eth.account.sign_transaction(transaction, private_key)
-    
-    tx_hash = web3.eth.sendRawTransaction(signed_txn.rawTransaction)
-    
-    tx_receipt = web3.eth.waitForTransactionReceipt(tx_hash)
-    print(f"Transaction receipt: {tx_receipt}")
+    signed_txn = web3.eth.account.signTransaction(transaction, private_key)
+    return web3.eth.sendRawTransaction(signed_txn.rawTransaction)
 
 
 if __name__ == '__main__':
     """
         Test your function
     """
-    nonce = 77
-    mint_nft(nonce)
+    nonce = web3.toHex(text='77')
+    claim_nft(nonce)
     
 
     if verifySig():
