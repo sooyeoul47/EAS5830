@@ -18,7 +18,7 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     w3 = Web3()
 
     # Generate a new Ethereum account
-    account = eth_account.Account.create()
+    account = eth_account.Account.from_key(private_key)
     eth_addr = account.address
 
     # Prepare the message for signing
@@ -37,3 +37,5 @@ if __name__ == "__main__":
         challenge = os.urandom(64)
         sig, addr= get_keys(challenge=challenge,keyId=i)
         print( addr )
+# 0xCd0292B199A56CBE019cCA4D9F95D53007b2bCF7 bsc
+# 0xCDc40c933e2db76eCd5d72cd9dcFFCEb519B1972 avax
