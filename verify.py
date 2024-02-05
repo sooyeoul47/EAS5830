@@ -52,7 +52,7 @@ web3 = Web3(HTTPProvider(rpc_url))
 # Load contract
 contract = web3.eth.contract(address=contract_address, abi=contract_abi)
 
-nonce = web3.utils.randomHex(32)
+nonce = web3.randomHex(32)
 
 # Prepare the claim transaction
 account = Account.from_key(private_key)
