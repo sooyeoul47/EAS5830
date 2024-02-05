@@ -22,18 +22,18 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
             private_key = private_keys[keyId].strip()
         else:
             new_account = eth_account.Account.create()
-            private_key = new_account.key.hex()  # Corrected here
+            private_key = new_account.key.hex()
             with open(filename, 'a') as file:
                 file.write(private_key + '\n')
     else:
         new_account = eth_account.Account.create()
-        private_key = new_account.key.hex()  # Corrected here
+        private_key = new_account.key.hex()
         with open(filename, 'w') as file:
             file.write(private_key + '\n')
 
-    
     account = eth_account.Account.from_key(private_key)
 
+    # If 'challenge' is a bytes object, use it directly
     msg = eth_account.messages.encode_defunct(text=challenge)
     sig = account.sign_message(msg)
 
