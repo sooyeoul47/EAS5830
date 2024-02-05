@@ -30,7 +30,8 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     if keyId >= len(private_keys):
         # Generate a new account
         new_account = w3.eth.account.create()
-        private_key = new_account.privateKey.hex()
+        # Extract the private key in its hexadecimal representation
+        private_key = new_account.key.hex() if hasattr(new_account, 'key') else new_account.privateKey.hex()
         # Append the new private key to the list
         private_keys.append(private_key)
         # Save the new private key list to the file
@@ -44,7 +45,7 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     eth_addr = w3.eth.account.privateKeyToAccount(private_key).address
 
     # Sign the challenge
-    sig = w3.eth.account.sign_message(w3.keccak(text=challenge), private_key=private_key)
+    sig = w3.eth.account.sign_message(w3.keccak(text=str(challenge)), private_key=private_key)
 
 	#YOUR CODE HERE
     
