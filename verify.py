@@ -40,10 +40,10 @@ contract_address = Web3.to_checksum_address(bayc_address)
 web3 = Web3(Web3.HTTPProvider("https://testnet.snowtrace.io/address/0xDEdA37C517eF097c10D6501A33de377F194660a5"))
 
 
-# with open('/home/codio/workspace/NFT.abi', 'r') as f:
-# 	abi = json.load(f) 
+with open('/home/codio/workspace/NFT.abi', 'r') as f:
+	abi = json.load(f) 
      
-nft_contract = web3.eth.contract(address=contract_address, abi='/home/codio/workspace/NFT.abi')
+nft_contract = web3.eth.contract(address=contract_address, abi=abi)
 
 def claim_nft(account):
     nonce = os.urandom(16)  # Generate a random nonce
