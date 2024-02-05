@@ -50,8 +50,8 @@ nft_contract = web3.eth.contract(address=contract_address, abi=abi)
 
 def claim_nft(nonce):
     transaction = nft_contract.functions.claim(wallet_address, nonce).buildTransaction({
-        'chainId': <Chain_ID_for_Fuji_Testnet>,
-        'gas': 1000000,
+        'chainId': 43113,
+        'gas': 700000,
         'gasPrice': web3.toWei('50', 'gwei'),
         'nonce': web3.eth.getTransactionCount(wallet_address),
     })
