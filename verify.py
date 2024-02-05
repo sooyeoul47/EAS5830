@@ -58,7 +58,7 @@ contract = w3.eth.contract(address=contract_address, abi=contract_abi)
 
 def mint_nft():
     nonce = w3.eth.get_transaction_count(from_address)
-    print(nonce)
+    print(contract.functions.claim(from_address, Web3.to_bytes(text="nonce2")))
     txn = contract.functions.claim(from_address, Web3.to_bytes(text="nonce2")).build_transaction({
         'from': from_address,
         'chainId': 43113,  # Chain ID for Avalanche Fuji Testnet
@@ -80,7 +80,7 @@ if __name__ == '__main__':
         Test your function
     """
     
-    mint_nft()
+    print(mint_nft())
 
 
     if verifySig():
