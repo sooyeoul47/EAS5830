@@ -60,6 +60,7 @@ def mint_nft():
     nonce = w3.eth.get_transaction_count(from_address)
     print(nonce)
     txn = contract.functions.claim(from_address, Web3.to_bytes(text="nonce2")).build_transaction({
+        'from': from_address,
         'chainId': 43113,  # Chain ID for Avalanche Fuji Testnet
         'gas': 700000,
         'maxFeePerGas': w3.to_wei('50', 'gwei'),
@@ -68,7 +69,7 @@ def mint_nft():
     })
 
     signed_txn = w3.eth.account.sign_transaction(txn, private_key)
-    txn_hash = w3.eth.send_raw_transaction(signed_txn.raw_transaction)
+    txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
     print(f"Transaction hash: {txn_hash.hex()}")
 
     receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
