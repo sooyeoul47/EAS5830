@@ -36,11 +36,6 @@ def verifySig():
 
 rpc_url = "https://api.avax-test.network/ext/bc/C/rpc"  # Example RPC URL for Avalanche Fuji Testnet
 web3 = Web3(Web3.HTTPProvider(rpc_url))
-
-if web3.isConnected():
-    print("Connected to Avalanche Fuji Testnet")
-else:
-    print("Failed to connect to the Avalanche Fuji Testnet")
     
 contract_address = "0x85ac2e065d4526FBeE6a2253389669a12318A412"
 
