@@ -1,6 +1,5 @@
 from web3 import Web3
 from eth_account.messages import encode_defunct
-from web3 import Account
 import random
 import os
 import json
@@ -36,7 +35,7 @@ def verifySig():
 
 
 
-rpc_url = "https://eth-mainnet.g.alchemy.com/v2/3stBMV-y3BpNCMQpK0BQV6kLWEmlfKdF" 
+rpc_url = "https://api.avax-test.network/ext/bc/C/rpc" 
 contract_address = "0x85ac2e065d4526FBeE6a2253389669a12318A412"
 wallet_address = "0xDEdA37C517eF097c10D6501A33de377F194660a5"
 private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"
