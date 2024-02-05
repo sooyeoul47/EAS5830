@@ -38,9 +38,9 @@ def verifySig():
 
 # Replace these with your actual details
 rpc_url = "https://api.avax-test.network/ext/bc/C/rpc"  # Example Avalanche Fuji Testnet RPC URL
-private_key = "YOUR_PRIVATE_KEY_HERE"  # WARNING: Keep your private key secure
+private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"  # WARNING: Keep your private key secure
 contract_address = Web3.toChecksumAddress("0x85ac2e065d4526FBeE6a2253389669a12318A412")
-account_address = "YOUR_ACCOUNT_ADDRESS_HERE"  # Your Ethereum address
+account_address = "0xDEdA37C517eF097c10D6501A33de377F194660a5"  # Your Ethereum address
 
 # Load ABI
 with open('/mnt/data/NFT.abi', 'r') as abi_definition:
@@ -48,11 +48,6 @@ with open('/mnt/data/NFT.abi', 'r') as abi_definition:
 
 # Setup web3 connection
 web3 = Web3(HTTPProvider(rpc_url))
-if web3.isConnected():
-    print("Connected to the Avalanche Fuji Testnet")
-else:
-    print("Failed to connect to the Avalanche Fuji Testnet")
-    exit()
 
 # Load contract
 contract = web3.eth.contract(address=contract_address, abi=contract_abi)
