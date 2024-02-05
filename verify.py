@@ -1,5 +1,6 @@
 from web3 import Web3
 from eth_account.messages import encode_defunct
+from web3 import Account
 import random
 import os
 import json
@@ -48,14 +49,14 @@ with open('/home/codio/workspace/NFT.abi', 'r') as f:
 nft_contract = web3.eth.contract(address=contract_address, abi=abi)
 
 
-def claim_nft(nonce):
-    transaction = nft_contract.functions.claim(wallet_address, nonce).buildTransaction({
+def claim_nft(account, nonce):
+    transaction = nft_contract.functions.claim(account.address, nonce).buildTransaction({
         'chainId': 43113,
-        'gas': 700000,
+        'gas': 1000000,
         'gasPrice': web3.toWei('50', 'gwei'),
-        'nonce': web3.eth.getTransactionCount(wallet_address),
+        'nonce': web3.eth.getTransactionCount(account.address),
     })
-    signed_txn = web3.eth.account.signTransaction(transaction, private_key)
+    signed_txn = account.signTransaction(transaction)
     return web3.eth.sendRawTransaction(signed_txn.rawTransaction)
 
 
@@ -63,8 +64,9 @@ if __name__ == '__main__':
     """
         Test your function
     """
-    nonce = web3.toHex(text='77')
-    claim_nft(nonce)
+    account = Account.from_key(private_key)
+    nonce = web3.toHex(text='5')
+    claim_nft(account, nonce)
     
 
     if verifySig():
