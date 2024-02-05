@@ -37,8 +37,7 @@ def verifySig():
 rpc_url = "https://eth-mainnet.g.alchemy.com/v2/3stBMV-y3BpNCMQpK0BQV6kLWEmlfKdF" #Set this to a node that you can connect to (e.g. an Alchemy node)
 w3 = Web3(Web3.HTTPProvider(rpc_url))
     
-contract_address = Web3.toChecksumAddress('0x85ac2e065d4526FBeE6a2253389669a12318A412')
-
+contract_address = Web3.to_checksum_address("0x85ac2e065d4526FBeE6a2253389669a12318A412")
 
 my_address = "0xDEdA37C517eF097c10D6501A33de377F194660a5"
 my_private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"
