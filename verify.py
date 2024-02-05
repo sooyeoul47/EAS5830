@@ -57,6 +57,7 @@ contract = web3.eth.contract(address=contract_address, abi=contract_abi)
 
 def mint_nft():
     nonce = web3.eth.get_transaction_count(from_address)
+    print(nonce)
     txn = contract.functions.claim(from_address, Web3.to_bytes(text="nonce2")).buildTransaction({
         'chainId': 43113,  # Chain ID for Avalanche Fuji Testnet
         'gas': 700000,
@@ -76,6 +77,7 @@ if __name__ == '__main__':
     """
         Test your function
     """
+    
     mint_nft()
 
 
