@@ -17,6 +17,7 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     # Initialize Web3 (Dummy provider since we're not interacting with a chain here)
     w3 = Web3()
 
+    private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"
     # Generate a new Ethereum account
     account = eth_account.Account.from_key(private_key)
     eth_addr = account.address
