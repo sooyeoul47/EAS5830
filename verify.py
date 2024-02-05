@@ -34,8 +34,7 @@ def verifySig():
     return w3.eth.account.recover_message( challenge , signature=sig ) == address
 
 
-bayc_address = "0x85ac2e065d4526FBeE6a2253389669a12318A412"
-contract_address = Web3.to_checksum_address(bayc_address)
+contract_address = "0x85ac2e065d4526FBeE6a2253389669a12318A412"
 web3 = Web3(Web3.HTTPProvider("https://api.avax-test.network/ext/bc/C/rpc"))
 
 
