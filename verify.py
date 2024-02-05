@@ -41,7 +41,9 @@ def verifySig():
 rpc_url = "https://api.avax-test.network/ext/bc/C/rpc"  
 private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0" 
 contract_address = Web3.to_checksum_address("0x85ac2e065d4526FBeE6a2253389669a12318A412")
-account_address = "0xDEdA37C517eF097c10D6501A33de377F194660a5" 
+account = Account.from_key(private_key)
+from_address = account.address
+
 
 # Load ABI
 with open('/home/codio/workspace/NFT.abi', 'r') as abi_definition:
@@ -53,30 +55,28 @@ web3 = Web3(HTTPProvider(rpc_url))
 # Load contract
 contract = web3.eth.contract(address=contract_address, abi=contract_abi)
 
-print(f"Transaction sent, TX Hash: {tx_hash.hex()}")
+def mint_nft():
+    nonce = web3.eth.get_transaction_count(from_address)
+    txn = contract.functions.claim(from_address, Web3.to_bytes(text="nonce2")).buildTransaction({
+        'chainId': 43113,  # Chain ID for Avalanche Fuji Testnet
+        'gas': 700000,
+        'maxFeePerGas': web3.toWei('50', 'gwei'),
+        'maxPriorityFeePerGas': web3.toWei('1', 'gwei'),
+        'nonce': nonce,
+    })
+
+    signed_txn = web3.eth.account.sign_transaction(txn, private_key)
+    txn_hash = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    print(f"Transaction hash: {txn_hash.hex()}")
+
+    receipt = web3.eth.wait_for_transaction_receipt(txn_hash)
+    print(f"Transaction receipt: {receipt}")
 
 if __name__ == '__main__':
     """
         Test your function
     """
-    nonce = web3.toBytes(text="431")
-
-    # Prepare the claim transaction
-    claim_txn = contract.functions.claim(account_address, nonce).buildTransaction({
-        'chainId': 43113,  # Chain ID for Avalanche Fuji Testnet
-        'gas': 700000,
-        'gasPrice': web3.toWei('50', 'gwei'),
-        'nonce': web3.eth.getTransactionCount(account_address),
-    })
-
-    # Sign the transaction
-    signed_txn = web3.eth.account.signTransaction(claim_txn, private_key=private_key)
-
-    # Send the transaction
-    txn_hash = web3.eth.sendRawTransaction(signed_txn.rawTransaction)
-
-    # Get the transaction receipt (might need to wait for it to be mined)
-    txn_receipt = web3.eth.waitForTransactionReceipt(txn_hash)
+    mint_nft()
 
 
     if verifySig():
