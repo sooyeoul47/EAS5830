@@ -43,7 +43,7 @@ contract_address = Web3.to_checksum_address("0x85ac2e065d4526FBeE6a2253389669a12
 account_address = "0xDEdA37C517eF097c10D6501A33de377F194660a5"  # Your Ethereum address
 
 # Load ABI
-with open('/mnt/data/NFT.abi', 'r') as abi_definition:
+with open('/home/codio/workspace/NFT.abi', 'r') as abi_definition:
     contract_abi = json.load(abi_definition)
 
 # Setup web3 connection
