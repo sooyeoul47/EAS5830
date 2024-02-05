@@ -11,7 +11,7 @@ def hash_collision(k):
    
     while True:
         # Generate two random strings
-        x = os.urandom(16)  # You can adjust the length as needed
+        x = os.urandom(16) 
         y = os.urandom(16)
 
         # Compute SHA256 hashes
@@ -19,8 +19,8 @@ def hash_collision(k):
         hash_y = hashlib.sha256(y).hexdigest()
 
         # Convert hexdigests to binary strings
-        bin_x = bin(int(hash_x, 16))[-k:]  # Get the last k bits
-        bin_y = bin(int(hash_y, 16))[-k:]  # Get the last k bits
+        bin_x = bin(int(hash_x, 16))[-k:] 
+        bin_y = bin(int(hash_y, 16))[-k:]
 
         # Check if the last k bits match
         if bin_x == bin_y:
