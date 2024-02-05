@@ -1,6 +1,8 @@
 from web3 import Web3
 import eth_account
 import os
+from eth_account import Account
+from eth_account.messages import encode_defunct
 
 def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     """
@@ -13,31 +15,20 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     If fewer than (keyId+1) mnemonics have been generated, generate a new one and return that
     """
 
-    # w3 = Web3()
+    w3 = Web3()
 
-    if os.path.exists(filename):
-        with open(filename, 'r') as file:
-            mnemonics = file.read().splitlines()
-    else:
-        mnemonics = []
+    # Generate a new account
+    new_account = Account.create()
 
+    # Access the private key and address from the new account
+    private_key = new_account.privateKey.hex()  # Correctly access the private key
+    eth_addr = new_account.address
 
-    if len(mnemonics) <= keyId:
-        new_account = eth_account.Account.create()
-        mnemonic = new_account.privateKey.hex()  # This should be a mnemonic in real use; simplified here for demonstration
-        with open(filename, 'a') as file:
-            file.write(mnemonic + '\n')
-        private_key = mnemonic
-    else:
-        private_key = mnemonics[keyId]
+    # Prepare the message
+    msg = encode_defunct(challenge)
 
-
-    # Create account from mnemonic
-    account = eth_account.Account.from_key(private_key)
-    eth_addr = account.address
-
-    msg = eth_account.messages.encode_defunct(text=challenge)
-    sig = account.sign_message(msg)
+    # Sign the message with the private key
+    sig = w3.eth.account.sign_message(msg, private_key=private_key)
 
 	#YOUR CODE HERE
     
