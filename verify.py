@@ -50,27 +50,27 @@ with open('/home/codio/workspace/NFT.abi', 'r') as abi_definition:
     contract_abi = json.load(abi_definition)
 
 # Setup web3 connection
-web3 = Web3(HTTPProvider(rpc_url))
+w3 = Web3(HTTPProvider(rpc_url))
 
 # Load contract
-contract = web3.eth.contract(address=contract_address, abi=contract_abi)
+contract = w3.eth.contract(address=contract_address, abi=contract_abi)
 
 def mint_nft():
-    nonce = web3.eth.get_transaction_count(from_address)
+    nonce = w3.eth.get_transaction_count(from_address)
     print(nonce)
-    txn = contract.functions.claim(from_address, Web3.to_bytes(text="nonce2")).buildTransaction({
+    txn = contract.functions.claim(from_address, Web3.to_bytes(text="nonce2")).build_transaction({
         'chainId': 43113,  # Chain ID for Avalanche Fuji Testnet
         'gas': 700000,
-        'maxFeePerGas': web3.toWei('50', 'gwei'),
-        'maxPriorityFeePerGas': web3.toWei('1', 'gwei'),
+        'maxFeePerGas': w3.toWei('50', 'gwei'),
+        'maxPriorityFeePerGas': w3.toWei('1', 'gwei'),
         'nonce': nonce,
     })
 
-    signed_txn = web3.eth.account.sign_transaction(txn, private_key)
-    txn_hash = web3.eth.send_raw_transaction(signed_txn.rawTransaction)
+    signed_txn = w3.eth.account.sign_transaction(txn, private_key)
+    txn_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
     print(f"Transaction hash: {txn_hash.hex()}")
 
-    receipt = web3.eth.wait_for_transaction_receipt(txn_hash)
+    receipt = w3.eth.wait_for_transaction_receipt(txn_hash)
     print(f"Transaction receipt: {receipt}")
 
 if __name__ == '__main__':
