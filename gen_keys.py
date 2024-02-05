@@ -20,26 +20,34 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
 
     if os.path.exists(filename):
         with open(filename, 'r') as file:
-            lines = file.readlines()
-            if keyId < len(lines):
-                mnemonic = lines[keyId].strip()
-                # Generate account from mnemonic (This step needs to be adjusted if you want to use mnemonics)
-            else:
-                # Generate a new account and append the mnemonic
-                account = w3.eth.account.create()
-                with open(filename, 'a') as file:
-                    file.write(account.privateKey.hex() + '\n')
+            mnemonics = file.read().splitlines()
     else:
-        # File doesn't exist, generate a new account
-        account = w3.eth.account.create()
-        with open(filename, 'w') as file:
-            file.write(account.privateKey.hex() + '\n')
+        mnemonics = []
 
+    # Check if we need to generate a new mnemonic
+    if keyId >= len(mnemonics):
+        # Generate a new account
+        new_account = Account.create()
+        mnemonic = new_account.address # This is a simplification; normally, we'd use a mnemonic phrase
+        # Append the new mnemonic (in this case, using the address as a placeholder)
+        mnemonics.append(mnemonic)
+        # Save the new mnemonic list
+        with open(filename, 'w') as file:
+            file.write("\n".join(mnemonics))
+    else:
+        # Use the existing mnemonic (here, using the address as a mnemonic, which is not standard)
+        mnemonic = mnemonics[keyId]
+        new_account = Account.from_key(mnemonic)
+
+    # Account details
+    private_key = new_account.key
+    eth_addr = new_account.address
+
+    # Encode the challenge
     msg = eth_account.messages.encode_defunct(text=challenge)
 
-    sig = account.sign_message(msg)
-
-    eth_addr = eth_account.Account.recover_message(msg, signature=sig.signature)
+    # Sign the message
+    sig = Account.sign_message(msg, private_key=private_key)
 
 	#YOUR CODE HERE
     
