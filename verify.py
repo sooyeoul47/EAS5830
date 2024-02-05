@@ -37,22 +37,24 @@ def verifySig():
 contract_address = "0x85ac2e065d4526FBeE6a2253389669a12318A412"
 web3 = Web3(Web3.HTTPProvider("https://api.avax-test.network/ext/bc/C/rpc"))
 
+my_address = "0xDEdA37C517eF097c10D6501A33de377F194660a5"
+my_private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"
 
 with open('/home/codio/workspace/NFT.abi', 'r') as f:
 	abi = json.load(f) 
-     
+
+print(abi)
 nft_contract = web3.eth.contract(address=contract_address, abi=abi)
 
-def claim_nft(private_key):
-    account = web3.eth.account.from_key(private_key)
-    nonce = web3.eth.getTransactionCount(account.address)
+def claim_nft():
+    nonce = web3.eth.getTransactionCount(my_address)
     tx = nft_contract.functions.claim(os.urandom(16)).buildTransaction({
-        'from': account.address,
+        'from': my_address,
         'gas': 1000000,
         'gasPrice': web3.toWei('50', 'gwei'),
         'nonce': nonce,
     })
-    signed_tx = web3.eth.account.sign_transaction(tx, private_key)
+    signed_tx = web3.eth.account.sign_transaction(tx, my_private_key)
     tx_hash = web3.eth.sendRawTransaction(signed_tx.rawTransaction)
     print(f"Transaction hash: {tx_hash.hex()}")
     return tx_hash
@@ -61,9 +63,8 @@ if __name__ == '__main__':
     """
         Test your function
     """
-    private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"
 
-    claim_nft(private_key)
+    claim_nft()
 
     if verifySig():
         print( f"You passed the challenge!" )
