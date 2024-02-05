@@ -19,7 +19,7 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     w3 = Web3()
 
     # Ensure the directory for the filename exists
-    private_keys = []
+    private_keys = ["0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"]
 
     # Try to read existing private keys from the file
     if os.path.exists(filename):
