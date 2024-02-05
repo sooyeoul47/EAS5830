@@ -1,4 +1,4 @@
-from web3 import Web3
+from web3 import Web3, Account
 import eth_account
 import os
 from eth_account import Account
@@ -18,36 +18,35 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
      # Ensure the Web3 instance is using the local provider
     w3 = Web3()
 
+    # Ensure the directory for the filename exists
+    os.makedirs(os.path.dirname(filename), exist_ok=True)
+
+    private_keys = []
+
+    # Try to read existing private keys from the file
     if os.path.exists(filename):
         with open(filename, 'r') as file:
-            mnemonics = file.read().splitlines()
-    else:
-        mnemonics = []
+            private_keys = file.read().splitlines()
 
-    # Check if we need to generate a new mnemonic
-    if keyId >= len(mnemonics):
+    # Check if we need to generate a new private key
+    if keyId >= len(private_keys):
         # Generate a new account
-        new_account = Account.create()
-        mnemonic = new_account.address # This is a simplification; normally, we'd use a mnemonic phrase
-        # Append the new mnemonic (in this case, using the address as a placeholder)
-        mnemonics.append(mnemonic)
-        # Save the new mnemonic list
+        new_account = w3.eth.account.create()
+        private_key = new_account.privateKey.hex()
+        # Append the new private key to the list
+        private_keys.append(private_key)
+        # Save the new private key list to the file
         with open(filename, 'w') as file:
-            file.write("\n".join(mnemonics))
+            file.write("\n".join(private_keys))
     else:
-        # Use the existing mnemonic (here, using the address as a mnemonic, which is not standard)
-        mnemonic = mnemonics[keyId]
-        new_account = Account.from_key(mnemonic)
+        # Use the existing private key
+        private_key = private_keys[keyId]
 
-    # Account details
-    private_key = new_account.key
-    eth_addr = new_account.address
+    # Derive the account address from the private key
+    eth_addr = w3.eth.account.privateKeyToAccount(private_key).address
 
-    # Encode the challenge
-    msg = eth_account.messages.encode_defunct(text=challenge)
-
-    # Sign the message
-    sig = Account.sign_message(msg, private_key=private_key)
+    # Sign the challenge
+    sig = w3.eth.account.sign_message(w3.keccak(text=challenge), private_key=private_key)
 
 	#YOUR CODE HERE
     
