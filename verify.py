@@ -39,7 +39,7 @@ def verifySig():
 # Replace these with your actual details
 rpc_url = "https://api.avax-test.network/ext/bc/C/rpc"  # Example Avalanche Fuji Testnet RPC URL
 private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"  # WARNING: Keep your private key secure
-contract_address = Web3.toChecksumAddress("0x85ac2e065d4526FBeE6a2253389669a12318A412")
+contract_address = Web3.to_checksum_address("0x85ac2e065d4526FBeE6a2253389669a12318A412")
 account_address = "0xDEdA37C517eF097c10D6501A33de377F194660a5"  # Your Ethereum address
 
 # Load ABI
