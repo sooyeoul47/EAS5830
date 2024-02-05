@@ -1,5 +1,6 @@
 from web3 import Web3, HTTPProvider
 from eth_account.messages import encode_defunct
+
 from web3 import Account
 import random
 import os
@@ -37,10 +38,10 @@ def verifySig():
 
 
 # Replace these with your actual details
-rpc_url = "https://api.avax-test.network/ext/bc/C/rpc"  # Example Avalanche Fuji Testnet RPC URL
-private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"  # WARNING: Keep your private key secure
+rpc_url = "https://api.avax-test.network/ext/bc/C/rpc"  
+private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0" 
 contract_address = Web3.to_checksum_address("0x85ac2e065d4526FBeE6a2253389669a12318A412")
-account_address = "0xDEdA37C517eF097c10D6501A33de377F194660a5"  # Your Ethereum address
+account_address = "0xDEdA37C517eF097c10D6501A33de377F194660a5" 
 
 # Load ABI
 with open('/home/codio/workspace/NFT.abi', 'r') as abi_definition:
@@ -52,29 +53,31 @@ web3 = Web3(HTTPProvider(rpc_url))
 # Load contract
 contract = web3.eth.contract(address=contract_address, abi=contract_abi)
 
-nonce = web3.to_hex(10)
-
-# Prepare the claim transaction
-account = Account.from_key(private_key)
-nonce_for_tx = web3.eth.getTransactionCount(account.address)
-transaction = contract.functions.claim(account_address, nonce).buildTransaction({
-    'chainId': 43113,  # Avalanche Fuji Testnet Chain ID
-    'gas': 3000000,
-    'gasPrice': web3.toWei('50', 'gwei'),
-    'nonce': nonce_for_tx,
-})
-
-# Sign the transaction
-signed_txn = account.sign_transaction(transaction)
-
-# Send the transaction
-tx_hash = web3.eth.sendRawTransaction(signed_txn.rawTransaction)
 print(f"Transaction sent, TX Hash: {tx_hash.hex()}")
 
 if __name__ == '__main__':
     """
         Test your function
     """
+    nonce = web3.toBytes(text="431")
+
+    # Prepare the claim transaction
+    claim_txn = contract.functions.claim(account_address, nonce).buildTransaction({
+        'chainId': 43113,  # Chain ID for Avalanche Fuji Testnet
+        'gas': 700000,
+        'gasPrice': web3.toWei('50', 'gwei'),
+        'nonce': web3.eth.getTransactionCount(account_address),
+    })
+
+    # Sign the transaction
+    signed_txn = web3.eth.account.signTransaction(claim_txn, private_key=private_key)
+
+    # Send the transaction
+    txn_hash = web3.eth.sendRawTransaction(signed_txn.rawTransaction)
+
+    # Get the transaction receipt (might need to wait for it to be mined)
+    txn_receipt = web3.eth.waitForTransactionReceipt(txn_hash)
+
 
     if verifySig():
         print( f"You passed the challenge!" )
