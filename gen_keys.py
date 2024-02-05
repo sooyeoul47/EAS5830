@@ -15,28 +15,36 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
 
     # w3 = Web3()
 
+    mnemonics = []
     if os.path.exists(filename):
         with open(filename, 'r') as file:
-            private_keys = file.readlines()
-        if keyId < len(private_keys):
-            private_key = private_keys[keyId].strip()
-        else:
-            new_account = eth_account.Account.create()
-            private_key = new_account.key.hex()
-            with open(filename, 'a') as file:
-                file.write(private_key + '\n')
+            mnemonics = file.readlines()
+
+    mnemonics = [m.strip() for m in mnemonics]
+
+    if keyId >= len(mnemonics):
+        # Generate a new mnemonic if needed
+        mnemonic = Account.create().address
+        mnemonics.append(mnemonic)
+        with open(filename, 'a') as file:
+            file.write(f"{mnemonic}\n")
     else:
-        new_account = eth_account.Account.create()
-        private_key = new_account.key.hex()
-        with open(filename, 'w') as file:
-            file.write(private_key + '\n')
+        # Use existing mnemonic
+        mnemonic = mnemonics[keyId]
 
-    account = eth_account.Account.from_key(private_key)
+   # Initialize web3 (use the Ethereum test network)
+    w3 = Web3()
 
-    # If 'challenge' is a bytes object, use it directly
-    msg = eth_account.messages.encode_defunct(text=challenge)
+    # Create account from mnemonic
+    account = w3.eth.account.privateKeyToAccount(mnemonic)
+
+    # Prepare the message
+    msg = encode_defunct(challenge)
+
+    # Sign the message
     sig = account.sign_message(msg)
 
+    # Verify the signature (as an assertion in your actual code)
     eth_addr = account.address
 	#YOUR CODE HERE
     
