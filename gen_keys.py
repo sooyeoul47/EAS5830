@@ -14,25 +14,31 @@ def get_keys(challenge,keyId = 0, filename = "eth_mnemonic.txt"):
     """
 
     w3 = Web3()
-    mnemonics = []
-    if os.path.exists(filename):
+
+    try:
         with open(filename, 'r') as file:
             mnemonics = file.readlines()
+    except FileNotFoundError:
+        mnemonics = []
 
     # Check if we need to generate a new mnemonic
-    if len(mnemonics) <= keyId:
-        new_mnemonic = w3.eth.account.create_with_mnemonic()
-        mnemonics.append(new_mnemonic + '\n')  # Add new mnemonic with newline for storage
-        with open(filename, 'w') as file:
-            file.writelines(mnemonics)
+    if keyId < len(mnemonics):
+        mnemonic = mnemonics[keyId].strip()
+    else:
+        # Generate a new mnemonic if needed
+        mnemonic = eth_account.Account.create_mnemonic()
+        with open(filename, 'a') as file:
+            file.write(mnemonic + '\n')
+        mnemonics.append(mnemonic)
 
-    mnemonic = mnemonics[keyId].strip()
-    acct = w3.eth.account.from_mnemonic(mnemonic)
-    eth_addr = acct.address
-
+    
+    acct = eth_account.Account.from_mnemonic(mnemonic=mnemonics[keyId].strip(), account_path=f"m/44'/60'/0'/0/{keyId}")
 
     msg = eth_account.messages.encode_defunct(challenge)
+
     sig = acct.sign_message(msg)
+
+    eth_addr = acct.address
 	#YOUR CODE HERE
     
     assert eth_account.Account.recover_message(msg,signature=sig.signature.hex()) == eth_addr, f"Failed to sign message properly"
