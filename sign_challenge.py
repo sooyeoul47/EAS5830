@@ -13,7 +13,9 @@ def sign_challenge(challenge):
     #YOUR CODE HERE
     ####
     encoded_message = eth_account.messages.encode_defunct(text=challenge)
-    addr, sig = Account.sign_message(encoded_message, private_key)
+    signed_message  = Account.sign_message(encoded_message, private_key)
+    addr = signed_message.address
+    sig  = signed_message.signature.hex()
     return addr, sig
 
 
