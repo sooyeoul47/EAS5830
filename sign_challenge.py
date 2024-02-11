@@ -1,5 +1,6 @@
 import eth_account
 from eth_account import Account
+from eth_account.messages import encode_defunct
 
 def sign_challenge(challenge):
     """
@@ -12,9 +13,17 @@ def sign_challenge(challenge):
     ####
     #YOUR CODE HERE
     ####
-    encoded_message = eth_account.messages.encode_defunct(text=challenge)
+    account = Account.from_key(private_key)
+    address = account.address
+    
+    # Encode the challenge message
+    encoded_message = encode_defunct(text=challenge)
+    
+    # Sign the encoded message
     signed_message = Account.sign_message(encoded_message, private_key)
-    return signed_message.address, signed_message.signature.hex()
+    
+    # Return the address and the signature in hexadecimal format
+    return address, signed_message.signature.hex()
 
 if __name__ == "__main__":
     """
