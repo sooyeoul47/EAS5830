@@ -37,9 +37,9 @@ contract Destination is AccessControl {
 		//YOUR CODE HERE
     require(underlying_tokens[_wrapped_token] != address(0), "Token not registered");
         
-    BridgeToken(_wrapped_token).burnFrom(msg.sender, _amount);
+    BridgeToken(_wrapped_token).burnFrom(address(this), _amount);
     
-    emit Unwrap(underlying_tokens[_wrapped_token], _wrapped_token, msg.sender, _recipient, _amount);
+    emit Unwrap(underlying_tokens[_wrapped_token], _wrapped_token, address(this), _recipient, _amount);
 
 	}
 
