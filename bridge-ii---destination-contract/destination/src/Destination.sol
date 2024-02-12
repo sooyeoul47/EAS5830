@@ -37,9 +37,9 @@ contract Destination is AccessControl {
 		//YOUR CODE HERE
     require(underlying_tokens[_wrapped_token] != address(0), "Token not registered");
         
-    BridgeToken(_wrapped_token).burnFrom(address(this), _amount);
+    BridgeToken(_wrapped_token).burnFrom(msg.sender, _amount);
     
-    emit Unwrap(underlying_tokens[_wrapped_token], _wrapped_token, address(this), _recipient, _amount);
+    emit Unwrap(underlying_tokens[_wrapped_token], _wrapped_token, msg.sender, _recipient, _amount);
 
 	}
 
@@ -48,8 +48,6 @@ contract Destination is AccessControl {
     BridgeToken newToken = new BridgeToken(_underlying_token, name, symbol, address(this));
     address newTokenAddress = address(newToken);
     
-    // newToken.grantRole(newToken.MINTER_ROLE(), address(this));
-
     underlying_tokens[newTokenAddress] = _underlying_token; 
     wrapped_tokens[_underlying_token] = newTokenAddress; 
     
