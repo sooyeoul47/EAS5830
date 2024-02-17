@@ -17,27 +17,35 @@ contract Source is AccessControl {
     constructor( address admin ) {
         _grantRole(DEFAULT_ADMIN_ROLE, admin);
         _grantRole(ADMIN_ROLE, admin);
+		_grantRole(WARDEN_ROLE, admin);
     }
 
 	function deposit(address _token, address _recipient, uint256 _amount ) public {
 		//YOUR CODE HERE
 		require(approved[_token], "Token not registered");
-        require(IERC20(_token).transferFrom(msg.sender, address(this), _amount), "Transfer failed");
-        emit Deposit(_token, _recipient, _amount);
+        
+		ERC20 token = ERC20(_token);
+		require(token.transferFrom(msg.sender, address(this), _amount), "Transfer failed");
+
+		emit Deposit(_token, _recipient, _amount);
 	}
 
 	function withdraw(address _token, address _recipient, uint256 _amount ) onlyRole(WARDEN_ROLE) public {
 		//YOUR CODE HERE
-		require(IERC20(_token).transfer(_recipient, _amount), "Transfer failed");
-        emit Withdrawal(_token, _recipient, _amount);
+		ERC20 token = ERC20(_token);
+    require(token.transfer(_recipient, _amount), "Transfer failed");
+    
+    emit Withdrawal(_token, _recipient, _amount);
 	}
 
 	function registerToken(address _token) onlyRole(ADMIN_ROLE) public {
 		//YOUR CODE HERE
 		require(!approved[_token], "Token already registered");
-        approved[_token] = true;
-        tokens.push(_token);
-        emit Registration(_token);
+        
+		approved[_token] = true;
+		tokens.push(_token);
+
+		emit Registration(_token);
 	}
 
 
