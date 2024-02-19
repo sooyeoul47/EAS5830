@@ -37,7 +37,6 @@ contract Attacker is AccessControl, IERC777Recipient {
 	function attack(uint256 amt) payable public onlyRole(ATTACKER_ROLE){
       require( address(bank) != address(0), "Target bank not set" );
 		//YOUR CODE TO START ATTACK GOES HERE
-			// require(msg.value == amt, "ETH to deposit must match the message value");
 
 			bank.deposit{value: amt}();
 
