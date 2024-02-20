@@ -52,7 +52,10 @@ def scanBlocks(chain,start_block,end_block,contract_address):
     else:
         print( f"Scanning blocks {start_block} - {end_block} on {chain}" )
 
-    df = pd.read_csv(eventfile)
+    if os.path.exists(eventfile):
+        df = pd.read_csv(eventfile)
+    else:
+        df = pd.DataFrame(columns=['chain', 'token', 'recipient', 'amount', 'transactionHash', 'address'])
 
     if end_block - start_block < 30:
         event_filter = contract.events.Deposit.create_filter(fromBlock=start_block,toBlock=end_block,argument_filters=arg_filter)
