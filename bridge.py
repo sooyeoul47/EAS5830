@@ -76,7 +76,7 @@ def scanBlocks(chain):
             txn = contract.functions.withdraw(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
                 'from': account_address,
                 'chainId': w3.eth.chain_id,
-                'gas': 5000000,
+                'gas': 10000000,
                 'maxFeePerGas': w3.to_wei('50', 'gwei'),
                 'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
                 'nonce': w3.eth.get_transaction_count(account_address)
@@ -91,7 +91,7 @@ def scanBlocks(chain):
             txn = contract.functions.wrap(event.args['underlying_token'], event.args['recipient'], event.args['amount']).build_transaction({
             'from': account_address,
             'chainId': w3.eth.chain_id,
-            'gas': 5000000,
+            'gas': 10000000,
             'maxFeePerGas': w3.to_wei('50', 'gwei'),
             'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
             'nonce': w3.eth.get_transaction_count(account_address)
