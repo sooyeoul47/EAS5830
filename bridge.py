@@ -56,8 +56,8 @@ def scanBlocks(chain):
         return
     
     #YOUR CODE HERE
-    w3_src = connectTo("source")
-    w3_dst = connectTo("destination")
+    w3_src = connectTo(source_chain)
+    w3_dst = connectTo(destination_chain)
     source_contracts = getContractInfo(chain)
     destination_contracts = getContractInfo(chain)
     source_contract_address, abi = source_contracts["address"], source_contracts["abi"]
