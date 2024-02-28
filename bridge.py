@@ -86,21 +86,16 @@ def scanBlocks(chain):
             # print(f'Transaction hash for registering token {event.args['underlying_token']}: {tx_hash.hex()}')
     elif chain == "destination":  #Destination
         event_filter = contract.events.Unwrap.create_filter(fromBlock=start_block)
-        events = event_filter.get_all_entries()
-        print(events)
-        # for event in event_filter.get_all_entries():
-        #     # print(f"Unwrap Event Detected: {event.args}")
-        #     txn = contract.functions.wrap(event.args['underlying_token'], event.args['recipient'], event.args['amount']).build_transaction({
-        #     'from': account_address,
-        #     'chainId': w3.eth.chain_id,
-        #     'gas': 5000000,
-        #     'maxFeePerGas': w3.to_wei('50', 'gwei'),
-        #     'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
-        #     'nonce': w3.eth.get_transaction_count(account_address)
-        #     })
-        #     signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
-        #     w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-        #     # print(f'Transaction hash for registering token {event.args['token']}: {tx_hash.hex()}')
-            
-
-scanBlocks("destination")
+        for event in event_filter.get_all_entries():
+            # print(f"Unwrap Event Detected: {event.args}")
+            txn = contract.functions.wrap(event.args['underlying_token'], event.args['recipient'], event.args['amount']).build_transaction({
+            'from': account_address,
+            'chainId': w3.eth.chain_id,
+            'gas': 5000000,
+            'maxFeePerGas': w3.to_wei('50', 'gwei'),
+            'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
+            'nonce': w3.eth.get_transaction_count(account_address)
+            })
+            signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
+            w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            # print(f'Transaction hash for registering token {event.args['token']}: {tx_hash.hex()}')
