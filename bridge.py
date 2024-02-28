@@ -70,7 +70,7 @@ def scanBlocks(chain):
     start_block_dst = w3_dst.eth.block_number - 5
 
     if chain == "source":  #Source
-        event_filter = source_contract.events.Deposit.create_filter(fromBlock=start_block_dst, toBlock=start_block_dst+5)
+        event_filter = source_contract.events.Deposit.create_filter(fromBlock=start_block_src)
         for event in event_filter.get_all_entries():
 
             txn = destination_contract.functions.wrap(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
@@ -85,7 +85,7 @@ def scanBlocks(chain):
             w3_dst.eth.send_raw_transaction(signed_txn.rawTransaction)
  
     elif chain == "destination":  #Destination
-        event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=start_block_dst, toBlock=start_block_dst+5)
+        event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=start_block_src)
         for event in event_filter.get_all_entries():
 
             txn = source_contract.functions.withdraw(event.args['underlying_token'], event.args['to'], event.args['amount']).build_transaction({
