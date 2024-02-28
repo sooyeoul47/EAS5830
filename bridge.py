@@ -69,7 +69,7 @@ def scanBlocks(chain):
     start_block = w3.eth.blockNumber - 5
 
     if chain == 'avax':  #Source
-        event_filter = contract.events.Deposit.createFilter(fromBlock=start_block)
+        event_filter = contract.events.Deposit.create_filter(fromBlock=start_block)
         for event in event_filter.get_all_entries():
             print(f"Deposit Event Detected: {event.args}")
             txn = contract.functions.wrap(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
@@ -82,7 +82,7 @@ def scanBlocks(chain):
             tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
             print(f'Transaction hash for registering token {event.args['token']}: {tx_hash.hex()}')
     elif chain == 'bsc':  #Destination
-        event_filter = contract.events.Unwrap.createFilter(fromBlock=start_block)
+        event_filter = contract.events.Unwrap.create_filter(fromBlock=start_block)
         for event in event_filter.get_all_entries():
             print(f"Unwrap Event Detected: {event.args}")
             txn = contract.functions.withdraw(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
