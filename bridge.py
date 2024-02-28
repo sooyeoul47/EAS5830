@@ -86,7 +86,7 @@ def scanBlocks(chain):
             w3.eth.send_raw_transaction(signed_txn.rawTransaction)
             # print(f'Transaction hash for registering token {event.args['underlying_token']}: {tx_hash.hex()}')
     elif chain == "destination":  #Destination
-        event_filter = contract.events.unwrap.create_filter(fromBlock=start_block)
+        event_filter = contract.events.Unwrap.create_filter(fromBlock=start_block)
         for event in event_filter.get_all_entries():
             # print(f"Unwrap Event Detected: {event.args}")
             txn = contract.functions.withdraw(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
