@@ -58,10 +58,11 @@ def scanBlocks(chain):
     #YOUR CODE HERE
     w3 = connectTo(source_chain if chain == "source" else destination_chain)
     contracts = getContractInfo(chain)
-    if chain == "source":
-        contract_address, abi = contracts["address"], contracts["abi"]
-    if chain == "destination":
-        contract_address, abi = contracts["address"], contracts["abi"]
+    contract_address, abi = contracts["address"], contracts["abi"]
+    # if chain == "source":
+        
+    # if chain == "destination":
+    #     contract_address, abi = contracts["address"], contracts["abi"]
 
     # contract_address, abi = getContractInfo(chain)
     contract = w3.eth.contract(address=contract_address, abi=abi)
