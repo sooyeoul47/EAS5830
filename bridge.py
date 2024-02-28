@@ -56,46 +56,47 @@ def scanBlocks(chain):
         return
     
     #YOUR CODE HERE
-    w3 = connectTo(source_chain if chain == "source" else destination_chain)
-    contracts = getContractInfo(chain)
-    contract_address, abi = contracts["address"], contracts["abi"]
-    # if chain == "source":
-        
-    # if chain == "destination":
-    #     contract_address, abi = contracts["address"], contracts["abi"]
+    w3_src = connectTo("source")
+    w3_dst = connectTo("destination")
+    source_contracts = getContractInfo(chain)
+    destination_contracts = getContractInfo(chain)
+    source_contract_address, abi = source_contracts["address"], source_contracts["abi"]
+    destination_contract_address, abi = destination_contracts["address"], destination_contracts["abi"]
 
     # contract_address, abi = getContractInfo(chain)
-    contract = w3.eth.contract(address=contract_address, abi=abi)
+    source_contract = w3_src.eth.contract(address=source_contract_address, abi=abi)
+    destination_contract = w3_dst.eth.contract(address=destination_contract_address, abi=abi)
 
-    start_block = w3.eth.block_number - 5
+    start_block_src = w3_src.eth.block_number - 5
+    start_block_dst = w3_dst.eth.block_number - 5
 
     if chain == "source":  #Source
-        event_filter = contract.events.Deposit.create_filter(fromBlock=start_block)
+        event_filter = source_contract.events.Deposit.create_filter(fromBlock=start_block_src)
         for event in event_filter.get_all_entries():
             # print(f"Deposit Event Detected: {event.args}")
-            txn = contract.functions.withdraw(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
+            txn = destination_contract.functions.wrap(event.args['underlying_token'], event.args['recipient'], event.args['amount']).build_transaction({
                 'from': account_address,
-                'chainId': w3.eth.chain_id,
+                'chainId': w3_dst.eth.chain_id,
                 'gas': 500000,
-                'maxFeePerGas': w3.to_wei('50', 'gwei'),
-                'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
-                'nonce': w3.eth.get_transaction_count(account_address)
+                'maxFeePerGas': w3_dst.to_wei('50', 'gwei'),
+                'maxPriorityFeePerGas': w3_dst.to_wei('1', 'gwei'),
+                'nonce': w3_dst.eth.get_transaction_count(account_address)
             })
-            signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
-            w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            signed_txn = w3_dst.eth.account.sign_transaction(txn, private_key=private_key)
+            w3_dst.eth.send_raw_transaction(signed_txn.rawTransaction)
             # print(f'Transaction hash for registering token {event.args['underlying_token']}: {tx_hash.hex()}')
     elif chain == "destination":  #Destination
-        event_filter = contract.events.Unwrap.create_filter(fromBlock=start_block)
+        event_filter = destination_contract_address.events.Unwrap.create_filter(fromBlock=start_block_dst)
         for event in event_filter.get_all_entries():
             # print(f"Unwrap Event Detected: {event.args}")
-            txn = contract.functions.wrap(event.args['underlying_token'], event.args['recipient'], event.args['amount']).build_transaction({
+            txn = source_contract.functions.withdraw(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
             'from': account_address,
-            'chainId': w3.eth.chain_id,
+            'chainId': w3_src.eth.chain_id,
             'gas': 5000000,
-            'maxFeePerGas': w3.to_wei('50', 'gwei'),
-            'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
-            'nonce': w3.eth.get_transaction_count(account_address)
+            'maxFeePerGas': w3_src.to_wei('50', 'gwei'),
+            'maxPriorityFeePerGas': w3_src.to_wei('1', 'gwei'),
+            'nonce': w3_src.eth.get_transaction_count(account_address)
             })
-            signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
-            w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            signed_txn = w3_src.eth.account.sign_transaction(txn, private_key=private_key)
+            w3_src.eth.send_raw_transaction(signed_txn.rawTransaction)
             # print(f'Transaction hash for registering token {event.args['token']}: {tx_hash.hex()}')
