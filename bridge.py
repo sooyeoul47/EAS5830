@@ -79,7 +79,6 @@ def scanBlocks(chain):
                 'gas': 5000000,
                 'maxFeePerGas': w3.to_wei('50', 'gwei'),
                 'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
-                'gasPrice': w3.to_wei('10', 'gwei'),
                 'nonce': w3.eth.get_transaction_count(account_address)
             })
             signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
@@ -93,7 +92,6 @@ def scanBlocks(chain):
             'from': account_address,
             'chainId': w3.eth.chain_id,
             'gas': 5000000,
-            'gasPrice': w3.to_wei('10', 'gwei'),
             'maxFeePerGas': w3.to_wei('50', 'gwei'),
             'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
             'nonce': w3.eth.get_transaction_count(account_address)
