@@ -32,7 +32,6 @@ def getContractInfo(chain):
     """
     p = Path(__file__).with_name(contract_info)
     try:
-        
         with p.open('r')  as f:
             contracts = json.load(f)
     except Exception as e:
@@ -41,7 +40,7 @@ def getContractInfo(chain):
         print( e )
         sys.exit(1)
 
-    return contracts
+    return contracts["source" if chain == source_chain else "destination"]
 
 def scanBlocks(chain):
     """
@@ -60,9 +59,9 @@ def scanBlocks(chain):
     w3 = connectTo(chain)
     contracts = getContractInfo(chain)
     if chain == source_chain:
-        contract_address, abi = contracts["source"]["address"], contracts["source"]["abi"]
+        contract_address, abi = contracts["address"], contracts["abi"]
     if chain == destination_chain:
-        contract_address, abi = contracts["destination"]["address"], contracts["destination"]["abi"]
+        contract_address, abi = contracts["address"], contracts["abi"]
 
     # contract_address, abi = getContractInfo(chain)
     contract = w3.eth.contract(address=contract_address, abi=abi)
