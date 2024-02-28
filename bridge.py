@@ -64,7 +64,7 @@ def scanBlocks(chain):
     if chain == destination_chain:
         contract_address, abi = contracts["destination"]["address"], contracts["destination"]["abi"]
 
-    contract_address, abi = getContractInfo(chain)
+    # contract_address, abi = getContractInfo(chain)
     contract = w3.eth.contract(address=contract_address, abi=abi)
 
     start_block = w3.eth.blockNumber - 5
