@@ -73,8 +73,9 @@ def scanBlocks(chain):
         for event in event_filter.get_all_entries():
             # print(f"Deposit Event Detected: {event.args}")
             txn = contract.functions.wrap(event.args['underlying_token'], event.args['recipient'], event.args['amount']).build_transaction({
+                'from': account_address,
                 'chainId': w3.eth.chain_id,
-                'gas': 10000000,
+                'gas': 5000000,
                 'maxFeePerGas': w3.to_wei('50', 'gwei'),
                 'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
                 'gasPrice': w3.to_wei('10', 'gwei'),
@@ -88,8 +89,9 @@ def scanBlocks(chain):
         for event in event_filter.get_all_entries():
             # print(f"Unwrap Event Detected: {event.args}")
             txn = contract.functions.withdraw(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
+            'from': account_address,
             'chainId': w3.eth.chain_id,
-            'gas': 10000000,
+            'gas': 5000000,
             'gasPrice': w3.to_wei('10', 'gwei'),
             'maxFeePerGas': w3.to_wei('50', 'gwei'),
             'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
