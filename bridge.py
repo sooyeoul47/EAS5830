@@ -74,25 +74,29 @@ def scanBlocks(chain):
             # print(f"Deposit Event Detected: {event.args}")
             txn = contract.functions.wrap(event.args['underlying_token'], event.args['recipient'], event.args['amount']).build_transaction({
                 'chainId': w3.eth.chain_id,
-                'gas': 5000000,
+                'gas': 10000000,
+                'maxFeePerGas': w3.to_wei('50', 'gwei'),
+                'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
                 'gasPrice': w3.to_wei('10', 'gwei'),
                 'nonce': w3.eth.get_transaction_count(account_address),
             })
             signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
-            # tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-            # print(f'Transaction hash for registering token {event.args['underlying_token']}: {tx_hash.hex()}')
+            tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            print(f'Transaction hash for registering token {event.args['underlying_token']}: {tx_hash.hex()}')
     elif chain == "destination":  #Destination
         event_filter = contract.events.unwrap.create_filter(fromBlock=start_block)
         for event in event_filter.get_all_entries():
             # print(f"Unwrap Event Detected: {event.args}")
             txn = contract.functions.withdraw(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
             'chainId': w3.eth.chain_id,
-            'gas': 5000000,
+            'gas': 10000000,
             'gasPrice': w3.to_wei('10', 'gwei'),
+            'maxFeePerGas': w3.to_wei('50', 'gwei'),
+            'maxPriorityFeePerGas': w3.to_wei('1', 'gwei'),
             'nonce': w3.eth.get_transaction_count(account_address),
             })
             signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
-            # tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-            # print(f'Transaction hash for registering token {event.args['token']}: {tx_hash.hex()}')
+            tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            print(f'Transaction hash for registering token {event.args['token']}: {tx_hash.hex()}')
             
 
