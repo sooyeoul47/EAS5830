@@ -75,7 +75,7 @@ def scanBlocks(chain):
             })
             signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
             tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-            print(f'Transaction hash for registering token {event.args['underlying_token']}: {tx_hash.hex()}')
+            # print(f'Transaction hash for registering token {event.args['underlying_token']}: {tx_hash.hex()}')
     elif chain == 'bsc':  #Destination
         event_filter = contract.events.Unwrap.create_filter(fromBlock=start_block)
         for event in event_filter.get_all_entries():
@@ -88,5 +88,5 @@ def scanBlocks(chain):
             })
             signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
             tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
-            print(f'Transaction hash for registering token {event.args['token']}: {tx_hash.hex()}')
+            # print(f'Transaction hash for registering token {event.args['token']}: {tx_hash.hex()}')
             
