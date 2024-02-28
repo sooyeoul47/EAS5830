@@ -9,6 +9,8 @@ from pathlib import Path
 source_chain = 'avax'
 destination_chain = 'bsc'
 contract_info = "contract_info.json"
+private_key = "0xbe83d012497ec952d06a6096de569d1382321789f4719b099bb5d8d0d40d9cd0"
+account_address = '0xDEdA37C517eF097c10D6501A33de377F194660a5'
 
 def connectTo(chain):
     if chain == 'avax':
@@ -30,6 +32,10 @@ def getContractInfo(chain):
     """
     p = Path(__file__).with_name(contract_info)
     try:
+        if chain == 'avax':
+            x = "source"
+        else:
+            x = 'destination'
         with p.open('r')  as f:
             contracts = json.load(f)
     except Exception as e:
@@ -38,7 +44,7 @@ def getContractInfo(chain):
         print( e )
         sys.exit(1)
 
-    return contracts[chain]
+    return contracts[x]
 
 
 
@@ -55,4 +61,37 @@ def scanBlocks(chain):
         print( f"Invalid chain: {chain}" )
         return
     
-        #YOUR CODE HERE
+    #YOUR CODE HERE
+    w3 = connectTo(chain)
+    contract_address, abi = getContractInfo(chain)
+    contract = w3.eth.contract(address=contract_address, abi=abi)
+
+    start_block = w3.eth.blockNumber - 5
+
+    if chain == 'avax':  #Source
+        event_filter = contract.events.Deposit.createFilter(fromBlock=start_block)
+        for event in event_filter.get_all_entries():
+            print(f"Deposit Event Detected: {event.args}")
+            txn = contract.functions.wrap(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
+                'chainId': w3.eth.chain_id,
+                'gas': 5000000,
+                'gasPrice': w3.to_wei('10', 'gwei'),
+                'nonce': w3.eth.get_transaction_count(account_address),
+            })
+            signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
+            tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            print(f'Transaction hash for registering token {event.args['token']}: {tx_hash.hex()}')
+    elif chain == 'bsc':  #Destination
+        event_filter = contract.events.Unwrap.createFilter(fromBlock=start_block)
+        for event in event_filter.get_all_entries():
+            print(f"Unwrap Event Detected: {event.args}")
+            txn = contract.functions.withdraw(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
+            'chainId': w3.eth.chain_id,
+            'gas': 5000000,
+            'gasPrice': w3.to_wei('10', 'gwei'),
+            'nonce': w3.eth.get_transaction_count(account_address),
+            })
+            signed_txn = w3.eth.account.sign_transaction(txn, private_key=private_key)
+            tx_hash = w3.eth.send_raw_transaction(signed_txn.rawTransaction)
+            print(f'Transaction hash for registering token {event.args['token']}: {tx_hash.hex()}')
+            
