@@ -88,7 +88,7 @@ def scanBlocks(chain):
         event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=start_block_dst)
         for event in event_filter.get_all_entries():
             # print(f"Unwrap Event Detected: {event.args}")
-            txn = source_contract.functions.withdraw(event.args['underlying_token'], event.args['recipient'], event.args['amount']).build_transaction({
+            txn = source_contract.functions.withdraw(event.args['underlying_token'], event.args['to'], event.args['amount']).build_transaction({
             'from': account_address,
             'chainId': w3_src.eth.chain_id,
             'gas': 5000000,
