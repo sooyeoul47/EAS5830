@@ -70,16 +70,15 @@ def scanBlocks(chain):
     src_start_block = src_end_block - 5
     dst_end_block = w3_dst.eth.get_block_number()
     dst_start_block = dst_end_block - 5
-    block_num_end = min(src_end_block, dst_end_block)
-    block_num_start = block_num_end - 5
+
     if chain == "source":  #Source
-        event_filter = source_contract.events.Deposit.create_filter(fromBlock=block_num_start, toBlock = block_num_end)
+        event_filter = source_contract.events.Deposit.create_filter(fromBlock=src_start_block, toBlock = src_end_block)
         for event in event_filter.get_all_entries():
 
             txn = destination_contract.functions.wrap(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
                 'from': account_address,
                 'chainId': w3_dst.eth.chain_id,
-                'gas': 1000000,
+                'gas': 5000000,
                 'maxFeePerGas': w3_dst.to_wei('50', 'gwei'),
                 'maxPriorityFeePerGas': w3_dst.to_wei('1', 'gwei'),
                 'nonce': w3_dst.eth.get_transaction_count(account_address)
@@ -88,7 +87,7 @@ def scanBlocks(chain):
             w3_dst.eth.send_raw_transaction(signed_txn.rawTransaction)
 
     elif chain == "destination":  #Destination
-        event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=block_num_start, toBlock = block_num_end)
+        event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=dst_start_block, toBlock = dst_end_block)
         for event in event_filter.get_all_entries():
 
             txn = source_contract.functions.withdraw(event.args['underlying_token'], event.args['to'], event.args['amount']).build_transaction({
