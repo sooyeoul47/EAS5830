@@ -60,12 +60,11 @@ def scanBlocks(chain):
     w3_dst = connectTo(destination_chain)
     source_contracts = getContractInfo(chain)
     destination_contracts = getContractInfo(chain)
-    source_contract_address, abi = source_contracts["address"], source_contracts["abi"]
-    destination_contract_address, abi = destination_contracts["address"], destination_contracts["abi"]
-
-    # contract_address, abi = getContractInfo(chain)
-    source_contract = w3_src.eth.contract(address=source_contract_address, abi=abi)
-    destination_contract = w3_dst.eth.contract(address=destination_contract_address, abi=abi)
+    source_contract_address, src_abi = source_contracts["address"], source_contracts
+    destination_contract_address, dst_abi = destination_contracts["address"], destination_contracts["abi"]
+    
+    source_contract = w3_src.eth.contract(address=source_contract_address, abi=src_abi)
+    destination_contract = w3_dst.eth.contract(address=destination_contract_address, abi=dst_abi)
 
     start_block_src = w3_src.eth.block_number - 5
     start_block_dst = w3_dst.eth.block_number - 5
@@ -86,7 +85,7 @@ def scanBlocks(chain):
             w3_dst.eth.send_raw_transaction(signed_txn.rawTransaction)
             # print(f'Transaction hash for registering token {event.args['underlying_token']}: {tx_hash.hex()}')
     elif chain == "destination":  #Destination
-        event_filter = destination_contract_address.events.Unwrap.create_filter(fromBlock=start_block_dst)
+        event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=start_block_dst)
         for event in event_filter.get_all_entries():
             # print(f"Unwrap Event Detected: {event.args}")
             txn = source_contract.functions.withdraw(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
@@ -100,3 +99,4 @@ def scanBlocks(chain):
             signed_txn = w3_src.eth.account.sign_transaction(txn, private_key=private_key)
             w3_src.eth.send_raw_transaction(signed_txn.rawTransaction)
             # print(f'Transaction hash for registering token {event.args['token']}: {tx_hash.hex()}')
+
