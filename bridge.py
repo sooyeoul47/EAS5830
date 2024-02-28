@@ -32,10 +32,7 @@ def getContractInfo(chain):
     """
     p = Path(__file__).with_name(contract_info)
     try:
-        if chain == 'avax':
-            x = "source"
-        else:
-            x = 'destination'
+        
         with p.open('r')  as f:
             contracts = json.load(f)
     except Exception as e:
@@ -44,9 +41,7 @@ def getContractInfo(chain):
         print( e )
         sys.exit(1)
 
-    return contracts[x]
-
-
+    return contracts
 
 def scanBlocks(chain):
     """
