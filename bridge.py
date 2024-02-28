@@ -70,9 +70,9 @@ def scanBlocks(chain):
     start_block_dst = w3_dst.eth.block_number - 5
 
     if chain == "source":  #Source
-        event_filter = source_contract.events.Deposit.create_filter(fromBlock=start_block_src)
+        event_filter = source_contract.events.Deposit.create_filter(fromBlock=start_block_dst)
         for event in event_filter.get_all_entries():
-            # print(f"Deposit Event Detected: {event.args}")
+
             txn = destination_contract.functions.wrap(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
                 'from': account_address,
                 'chainId': w3_dst.eth.chain_id,
@@ -83,11 +83,11 @@ def scanBlocks(chain):
             })
             signed_txn = w3_dst.eth.account.sign_transaction(txn, private_key=private_key)
             w3_dst.eth.send_raw_transaction(signed_txn.rawTransaction)
-            # print(f'Transaction hash for registering token {event.args['underlying_token']}: {tx_hash.hex()}')
+ 
     elif chain == "destination":  #Destination
         event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=start_block_dst)
         for event in event_filter.get_all_entries():
-            # print(f"Unwrap Event Detected: {event.args}")
+
             txn = source_contract.functions.withdraw(event.args['underlying_token'], event.args['to'], event.args['amount']).build_transaction({
             'from': account_address,
             'chainId': w3_src.eth.chain_id,
@@ -98,5 +98,5 @@ def scanBlocks(chain):
             })
             signed_txn = w3_src.eth.account.sign_transaction(txn, private_key=private_key)
             w3_src.eth.send_raw_transaction(signed_txn.rawTransaction)
-            # print(f'Transaction hash for registering token {event.args['token']}: {tx_hash.hex()}')
+
 
