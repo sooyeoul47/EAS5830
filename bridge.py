@@ -60,7 +60,7 @@ def scanBlocks(chain):
     w3_dst = connectTo(destination_chain)
     source_contracts = getContractInfo(chain)
     destination_contracts = getContractInfo(chain)
-    source_contract_address, src_abi = source_contracts["address"], source_contracts
+    source_contract_address, src_abi = source_contracts["address"], source_contracts["abi"]
     destination_contract_address, dst_abi = destination_contracts["address"], destination_contracts["abi"]
     
     source_contract = w3_src.eth.contract(address=source_contract_address, abi=src_abi)
