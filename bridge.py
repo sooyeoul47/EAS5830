@@ -66,7 +66,7 @@ def scanBlocks(chain):
     # contract_address, abi = getContractInfo(chain)
     contract = w3.eth.contract(address=contract_address, abi=abi)
 
-    start_block = w3.eth.blockNumber - 5
+    start_block = w3.eth.block_number - 5
 
     if chain == source_chain:  #Source
         event_filter = contract.events.Deposit.create_filter(fromBlock=start_block)
