@@ -67,9 +67,9 @@ def scanBlocks(chain):
     destination_contract = w3_dst.eth.contract(address=destination_contract_address, abi=dst_abi)
 
     
-    src_end_block = w3_src.eth.get_block('latest')
+    src_end_block = w3_src.eth.block_number
     src_start_block = src_end_block - 5
-    dst_end_block = w3_dst.eth.get_block('latest')
+    dst_end_block = w3_dst.eth.block_number
     dst_start_block = dst_end_block - 5
     arg_filter = {}
     if chain == "source":  #Source
