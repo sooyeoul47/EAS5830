@@ -72,7 +72,7 @@ def scanBlocks(chain):
     dst_start_block = dst_end_block - 5
     arg_filter = {}
     if chain == "source":  #Source
-        event_filter = source_contract.events.Deposit.create_filter(fromBlock=src_start_block, toBlock = src_end_block,argument_filters=arg_filter)
+        event_filter = source_contract.events.Deposit.create_filter(fromBlock=dst_start_block, toBlock = dst_end_block,argument_filters=arg_filter)
         for event in event_filter.get_all_entries():
 
             txn = destination_contract.functions.wrap(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
