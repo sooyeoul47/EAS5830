@@ -81,7 +81,7 @@ def scanBlocks(chain):
             
             event_filter = source_contract.events.Deposit.create_filter(fromBlock=src_start_block, toBlock = src_end_block, argument_filters=arg_filter)
             for event in event_filter.get_all_entries():
-                print(f"Event: {event}")
+                print(f"Event Source: {event}")
                 txn = destination_contract.functions.wrap(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
                     'from': account_address,
                     'chainId': w3_dst.eth.chain_id,
@@ -98,7 +98,7 @@ def scanBlocks(chain):
             
             event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=dst_start_block, toBlock = dst_end_block, argument_filters=arg_filter)
             for event in event_filter.get_all_entries():
-                print(f"Event: {event}")
+                print(f"Event Destination: {event}")
                 txn = source_contract.functions.withdraw(event.args['underlying_token'], event.args['to'], event.args['amount']).build_transaction({
                 'from': account_address,
                 'chainId': w3_src.eth.chain_id,
