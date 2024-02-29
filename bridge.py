@@ -74,12 +74,15 @@ def scanBlocks(chain):
     dst_start_block = dst_end_block - 5
     dst_range = range(dst_start_block, dst_end_block + 1)
     r = src_range if chain == "source" else dst_range
+    w3 = w3_src if chain=='source' else w3_dst
+    end_block = w3.eth.get_block_number()
+    start_block = end_block - 5
 
     arg_filter = {}
     for i in r:
         if chain == "source":  #Source
             
-            event_filter = source_contract.events.Deposit.create_filter(fromBlock=src_start_block, toBlock = src_end_block, argument_filters=arg_filter)
+            event_filter = source_contract.events.Deposit.create_filter(fromBlock=start_block, toBlock = end_block, argument_filters=arg_filter)
             events = event_filter.get_all_entries()
             print(f"Source Events:  {events}")
             for event in event_filter.get_all_entries():
@@ -98,7 +101,7 @@ def scanBlocks(chain):
 
         elif chain == "destination":  #Destination
             
-            event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=dst_start_block, toBlock = dst_end_block, argument_filters=arg_filter)
+            event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=start_block, toBlock = end_block, argument_filters=arg_filter)
             for event in event_filter.get_all_entries():
                 print(f"Event Destination: {event}")
                 txn = source_contract.functions.withdraw(event.args['underlying_token'], event.args['to'], event.args['amount']).build_transaction({
