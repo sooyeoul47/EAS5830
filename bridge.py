@@ -69,12 +69,16 @@ def scanBlocks(chain):
     
     src_end_block = w3_src.eth.block_number
     src_start_block = src_end_block - 5
-    dst_end_block = w3_dst.eth.block_number
-    dst_start_block = dst_end_block - 5
+    # dst_end_block = w3_dst.eth.block_number
+    # dst_start_block = dst_end_block - 5
+
+    # print(dst_end_block)
+    # print(w3_dst.eth.get_block_number())
+    # print(dst_start_block)
     arg_filter = {}
     if chain == "source":  #Source
         
-        event_filter = source_contract.events.Deposit.create_filter(fromBlock=src_start_block, toBlock = src_end_block,argument_filters=arg_filter)
+        event_filter = source_contract.events.Deposit.create_filter(fromBlock=src_start_block - 5, toBlock = src_end_block - 5,argument_filters=arg_filter)
         for event in event_filter.get_all_entries():
 
             txn = destination_contract.functions.wrap(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
@@ -90,7 +94,7 @@ def scanBlocks(chain):
 
     elif chain == "destination":  #Destination
         
-        event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=dst_start_block, toBlock = dst_end_block,argument_filters=arg_filter)
+        event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=src_start_block, toBlock = src_start_block,argument_filters=arg_filter)
         for event in event_filter.get_all_entries():
 
             txn = source_contract.functions.withdraw(event.args['underlying_token'], event.args['to'], event.args['amount']).build_transaction({
@@ -104,4 +108,4 @@ def scanBlocks(chain):
             signed_txn = w3_src.eth.account.sign_transaction(txn, private_key=private_key)
             w3_src.eth.send_raw_transaction(signed_txn.rawTransaction)
 
-
+scanBlocks("destination")
