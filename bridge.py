@@ -97,7 +97,7 @@ def scanBlocks(chain):
 
     elif chain == "destination":  #Destination
         
-        event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=start_block, toBlock = end_block, argument_filters=arg_filter)
+        event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=dst_start_block, toBlock = dst_end_block, argument_filters=arg_filter)
         for event in event_filter.get_all_entries():
             print(f"Event Destination: {event}")
             txn = source_contract.functions.withdraw(event.args['underlying_token'], event.args['to'], event.args['amount']).build_transaction({
