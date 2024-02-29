@@ -91,7 +91,6 @@ def scanBlocks(chain):
                 # 'maxPriorityFeePerGas': w3_dst.to_wei('1', 'gwei'),
                 'nonce': w3_dst.eth.get_transaction_count(account_address)
             })
-            print(f"Successful: {txn}, {i}")
             signed_txn = w3_dst.eth.account.sign_transaction(txn, private_key=private_key)
             w3_dst.eth.send_raw_transaction(signed_txn.rawTransaction)
 
@@ -108,6 +107,5 @@ def scanBlocks(chain):
             # 'maxPriorityFeePerGas': w3_src.to_wei('1', 'gwei'),
             'nonce': w3_src.eth.get_transaction_count(account_address)
             })
-            print(f"Successful: {txn}, {i}")
             signed_txn = w3_src.eth.account.sign_transaction(txn, private_key=private_key)
             w3_src.eth.send_raw_transaction(signed_txn.rawTransaction)
