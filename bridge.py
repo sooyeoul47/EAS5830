@@ -74,44 +74,40 @@ def scanBlocks(chain):
     dst_start_block = dst_end_block - 5
     dst_range = range(dst_start_block, dst_end_block + 1)
     r = src_range if chain == "source" else dst_range
-    w3 = w3_src if chain=='source' else w3_dst
-    end_block = w3.eth.get_block_number()
-    start_block = end_block - 5
 
     arg_filter = {}
-    for i in r:
-        if chain == "source":  #Source
-            
-            event_filter = source_contract.events.Deposit.create_filter(fromBlock=start_block, toBlock = end_block, argument_filters=arg_filter)
-            events = event_filter.get_all_entries()
-            print(f"Source Events:  {events}")
-            for event in event_filter.get_all_entries():
-                print(f"Event Source: {event}")
-                txn = destination_contract.functions.wrap(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
-                    'from': account_address,
-                    'chainId': w3_dst.eth.chain_id,
-                    'gas': 5000000,
-                    # 'maxFeePerGas': w3_dst.to_wei('50', 'gwei'),
-                    # 'maxPriorityFeePerGas': w3_dst.to_wei('1', 'gwei'),
-                    'nonce': w3_dst.eth.get_transaction_count(account_address)
-                })
-                print(f"Successful: {txn}, {i}")
-                signed_txn = w3_dst.eth.account.sign_transaction(txn, private_key=private_key)
-                w3_dst.eth.send_raw_transaction(signed_txn.rawTransaction)
-
-        elif chain == "destination":  #Destination
-            
-            event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=start_block, toBlock = end_block, argument_filters=arg_filter)
-            for event in event_filter.get_all_entries():
-                print(f"Event Destination: {event}")
-                txn = source_contract.functions.withdraw(event.args['underlying_token'], event.args['to'], event.args['amount']).build_transaction({
+    if chain == "source":  #Source
+        
+        event_filter = source_contract.events.Deposit.create_filter(fromBlock=src_start_block, toBlock = src_end_block, argument_filters=arg_filter)
+        events = event_filter.get_all_entries()
+        print(f"Source Events:  {events}")
+        for event in event_filter.get_all_entries():
+            print(f"Event Source: {event}")
+            txn = destination_contract.functions.wrap(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
                 'from': account_address,
-                'chainId': w3_src.eth.chain_id,
-                'gas': 100000,
-                # 'maxFeePerGas': w3_src.to_wei('50', 'gwei'),
-                # 'maxPriorityFeePerGas': w3_src.to_wei('1', 'gwei'),
-                'nonce': w3_src.eth.get_transaction_count(account_address)
-                })
-                print(f"Successful: {txn}, {i}")
-                signed_txn = w3_src.eth.account.sign_transaction(txn, private_key=private_key)
-                w3_src.eth.send_raw_transaction(signed_txn.rawTransaction)
+                'chainId': w3_dst.eth.chain_id,
+                'gas': 5000000,
+                # 'maxFeePerGas': w3_dst.to_wei('50', 'gwei'),
+                # 'maxPriorityFeePerGas': w3_dst.to_wei('1', 'gwei'),
+                'nonce': w3_dst.eth.get_transaction_count(account_address)
+            })
+            print(f"Successful: {txn}, {i}")
+            signed_txn = w3_dst.eth.account.sign_transaction(txn, private_key=private_key)
+            w3_dst.eth.send_raw_transaction(signed_txn.rawTransaction)
+
+    elif chain == "destination":  #Destination
+        
+        event_filter = destination_contract.events.Unwrap.create_filter(fromBlock=start_block, toBlock = end_block, argument_filters=arg_filter)
+        for event in event_filter.get_all_entries():
+            print(f"Event Destination: {event}")
+            txn = source_contract.functions.withdraw(event.args['underlying_token'], event.args['to'], event.args['amount']).build_transaction({
+            'from': account_address,
+            'chainId': w3_src.eth.chain_id,
+            'gas': 100000,
+            # 'maxFeePerGas': w3_src.to_wei('50', 'gwei'),
+            # 'maxPriorityFeePerGas': w3_src.to_wei('1', 'gwei'),
+            'nonce': w3_src.eth.get_transaction_count(account_address)
+            })
+            print(f"Successful: {txn}, {i}")
+            signed_txn = w3_src.eth.account.sign_transaction(txn, private_key=private_key)
+            w3_src.eth.send_raw_transaction(signed_txn.rawTransaction)
