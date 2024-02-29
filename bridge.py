@@ -77,7 +77,7 @@ def scanBlocks(chain):
         
         event_filter = source_contract.events.Deposit.create_filter(fromBlock=src_start_block, toBlock = src_end_block, argument_filters=arg_filter)
         for event in event_filter.get_all_entries():
-
+            print(f"Event: {event}")
             txn = destination_contract.functions.wrap(event.args['token'], event.args['recipient'], event.args['amount']).build_transaction({
                 'from': account_address,
                 'chainId': w3_dst.eth.chain_id,
